@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Home extends React.Component {
+class Settings extends React.Component {
 
     constructor(props) {
         super(props);
@@ -9,11 +9,11 @@ class Home extends React.Component {
     render() {
         return(
             <div>
-                This is the main dashboard.
+                This is the settings page.
                 <button onClick={() => this.props.firebase.auth().signOut()}>Sign Out</button>
             </div>
         )
     }
 }
 
-export default Home;
+export default Settings;

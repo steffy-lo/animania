@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "animania-274522",
+  "private_key_id": "017cc56e1ccfd39393406b4bffe37569ce83134d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDAH3Nl/Hw4dV3w\ndmaWVxf3dSjTRaHWgZ4WR/z+XXcTDl2Q/6I3jJts7sUwmUTOmAju8li7y+v9rCuI\nN6hQfO+fTxMNrmmueKLaz0EVZQRnuKVHiKvfqM7EVEyToY+hs61bgEd/jpX4Cij0\nfMSI9+t8gmYuIz3Rv/dRngX9kfwLwK1unkfYOrH/C0z2T8Xyk+3+M+8XkqP3o6OA\nDTU7qgV3rDiSyxdc2pbxDVDR7d4E3UFBIph7xreV3z0h8mUQnP2RuugqsmDuYxtW\nOBHz2QNLEF6+a6XxkxKiVKhiNB/H4aq7ig/7wFrydywv1hw7rOJLixzj6I5MWkJL\n8piKeYEfAgMBAAECggEAF9jPiMKE42J4vTbfwkbKjBtYF0FMC/Adde6MPJZ6spF/\nPlbnWmBy5QaOJgYgQEnRcgyqxESqOjEmBiEXx0XQCG+Bke/Vi6PLCGsz94/eXXF8\nh8XdxO6TG6jLCILD7Uem0PYPPzSs8L4cxJwSrl2iNoYztgOx0gMzPkeQaXUMBU6M\niF2rwPzgmf7ZU2Q6HyCmoQgRBjrkQAWo6g5g+5KV3UfvEDuUeeQuiiM29K9rUSSR\nUnDtpx62JYPCl9WCYoOyyxgmnT6lm0pLnTAOX7oZ5RtDWPMmo4c/nFX1HYAjcuNL\nQZ6bQRzxuomwB4xAgGM9IBXUm0UucHhpkMsBeP+A4QKBgQD2IKZK126VO48fhT/1\nBA/rG1YzuelzxqbCVnox8Qv+C7jfkkCk5M+O5iQWmRJFvhXmFbdVvZLxBw+yI5QW\ngH+jYxBLQJyu/AenULCZLiwlAjcEAOV3hkIOEbD8o4QCBcu0oVv+xHY/tCh1BTvJ\n3WLUtxub/2zb27sH3eJf7xq28wKBgQDH1EGf+jCOre9LytmZBNXSE0mW1H7FsDGC\nonv3BQTJXdZXnLfIsWyTXKLzkGVvOLnEb/QMZx+CyOhhTD5Y4mrP1ckl9HODOdGb\nJRf/OEvDVDnOlgt11dYZ5Nipv3IcZ3L2Pcmg8F7JkBtGdss+9mdV8NK3yLDuz5KI\nu2DW7FKwJQKBgQDpXb2ueqNsNeOXdGVW8HoTZoEOXHkggDs/SnVkAvRm9UBeIzLN\n5fFywX14O7zaicgDt5V0Y2H+zL4yHo/b4gyjo1sgruug8nBjURuQsfnDQV1em2b3\nNEJPSrDwai3RKSOjaddrMWYZMr2lbsfot9Nscw1nlQDnWWj1pYltgq1mxwKBgQCE\nmXRyk7Jk+0YvJQv/XhYEsIfEbn0w8RnpdaiM4eerN3lj6bqKkjFaF76JoOeuRhX/\nI8rt8AAY6PhKmC1HDfeSsmonpW6BRXyxVov174VWuC0jyK0SJDNOO20KNt+huYOv\nopCJGvfLCLUQrQNxZFBt1r/89E90KIkz8iLweyDjgQKBgQCssaVOD6jmRPrMuuZf\nGe687NGFIIZCisRdedegZo8v4ArSUnSChr97cej6Y02DOBOnIitVnA+z22ZMnusF\nKI68IzpeSMGXCu8e+CIEU2GGvtDhUvoaknv1NcGiZsVvRntmca/jK0KCD2bK5keo\nAOiG6yaqgOZHQGwAqdZ3bZrEng==\n-----END PRIVATE KEY-----\n",
+  "client_email": "editor@animania-274522.iam.gserviceaccount.com",
+  "client_id": "105314432855988943980",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/editor%40animania-274522.iam.gserviceaccount.com"
+}

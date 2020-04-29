@@ -32,15 +32,22 @@ class App extends React.Component {
   componentDidMount() {
       firebase.auth().onAuthStateChanged(user => {
           this.setState({
-              isSignedIn: !!user // if user is not an object, set to true, if not an object, set it to false
+              isSignedIn: !!user, // if user is not an object, set to true, if not an object, set it to false
+              
           })
+          if (this.state.isSignedIn){
+            this.setState({
+                profile: user.photoURL
+            })
+        }
       })
   }
 
   render() {
+      
     return(
         <div className="Animania">
-            {this.state.isSignedIn ? <Main firebase={firebase}/> :
+            {this.state.isSignedIn ? <Main firebase={firebase} state={this.state}/> :
                 (
                     <div>
                         <div className="form">

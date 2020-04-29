@@ -1,15 +1,29 @@
-.signOut {
-    position: absolute;
-    width: 100px;
-    right: 20px;
+
+.logo-icon {
+    float:left;
+    width: 80px;
+    margin-left: 20px;
     top: 20px;
 }
 
-.settings button {
-    position: absolute;
-    width: 100px;
-    right: 130px;
-    top: 20px;
+.settings{
+    float: right;
+    margin-right: 30px;
+    margin-top: 20px;
+    max-width: 35px;
+}
+.user-icon{
+    float: right;
+    margin-right: 40px;
+    margin-top: 20px;
+    max-width: 35px;
+    border-radius: 50%;
+}
+.log-out{
+    float: right;
+    margin-right: 30px;
+    margin-top: 20px;
+    max-width: 35px;
 }
 
 button.btn-primary {

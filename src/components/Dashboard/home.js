@@ -7,18 +7,23 @@ class Home extends React.Component {
 
     constructor(props) {
         super(props);
+        this.signout = this.signout.bind(this);
+    }
+
+    signout() {
+        this.props.firebase.auth().signOut();
+        console.log("YEAH");
     }
 
     render() {
         return(
             <div>
-                This is the main dashboard.
-                <div className="settings">
-                    <Link to="/settings">
-                        <Button>Settings</Button>
-                    </Link>
-                </div>
-                <Button className="signOut" onClick={() => this.props.firebase.auth().signOut()}>Sign Out</Button>
+                <img className="user-icon" alt="profilepic" src={this.props.state.profile}/>
+                <img className="logo-icon" alt="logo" src={require('../../logo.png')}/>
+                <img src={require('../../logOut.png')} className="log-out" onClick={()=>this.props.firebase.auth().signOut()}/>
+                <Link to="/settings">
+                    <img className="settings" alt="settings" src={require('../../settings.png')}/>
+                </Link>
             </div>
         )
     }

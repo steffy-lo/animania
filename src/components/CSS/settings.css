@@ -1,0 +1,43 @@
+.signOut {
+    position: absolute;
+    width: 100px;
+    right: 20px;
+    top: 20px;
+}
+
+.home button {
+    position: absolute;
+    width: 100px;
+    right: 130px;
+    top: 20px;
+}
+
+button.btn-primary {
+    background-color: red;
+    border-color: red;
+}
+
+button.btn-primary:hover, button.btn-primary:active, button.btn-primary:visited {
+    background-color: firebrick;
+    border-color: firebrick;
+}
+
+.form {
+    position: relative;
+    background: #FFFFFF;
+    max-width: 360px;
+    text-align: center;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+.form input {
+    outline: 0;
+    background: #f2f2f2;
+    width: 100%;
+    border: 0;
+    margin: 0px 0px 15px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+    text-align: center;
+}

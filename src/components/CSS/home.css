@@ -1,0 +1,23 @@
+.signOut {
+    position: absolute;
+    width: 100px;
+    right: 20px;
+    top: 20px;
+}
+
+.settings button {
+    position: absolute;
+    width: 100px;
+    right: 130px;
+    top: 20px;
+}
+
+button.btn-primary {
+    background-color: red;
+    border-color: red;
+}
+
+button.btn-primary:hover, button.btn-primary:active, button.btn-primary:visited {
+    background-color: firebrick;
+    border-color: firebrick;
+}

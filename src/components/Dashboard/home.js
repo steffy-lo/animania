@@ -1,7 +1,7 @@
 import React from 'react';
-import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
 import '../CSS/home.css'
+import ForYou from './recommend';
 
 class Home extends React.Component {
 
@@ -19,22 +19,21 @@ class Home extends React.Component {
         return(
             <div className="nav-bar">
                 <div className="logoImg">
-                <img className="logo-icon" alt="logo" src={require('../../logoTitle.png')}/>
+                <img className="logo-icon" alt="logo" src={require('../../images/logoTitle.png')}/>
                 </div>
                 
                 <div className="search-div">
-                    <input type="text" placeholder="Search" className="search"></input>
-                    <button className="search-btn" type="submit"><img className="search-icon" src ={require('../../Search.png')}/></button>
+                    <input type="text" placeholder="Search" className="search"/>
+                    <button className="search-btn" type="submit"><img className="search-icon" src ={require('../../images/Search.png')}/></button>
                 </div>
                 <div className="icons">
                     
                     <Link to="/settings">
-                        <img className="settings" alt="settings" src={require('../../settings.png')}/>
+                        <img className="settings" alt="settings" src={require('../../images/settings.png')}/>
                     </Link>
-                    <img src={require('../../logOut.png')} className="log-out" onClick={()=>this.props.firebase.auth().signOut()}/>
+                    <img src={require('../../images/logOut.png')} className="log-out" onClick={()=>this.props.firebase.auth().signOut()}/>
                     <img className="user-icon" alt="profilepic" src={this.props.state.profile}/>
                 </div>
-                
             </div>
         )
     }

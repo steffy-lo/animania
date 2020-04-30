@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../CSS/home.css';
+import Button from "react-bootstrap/Button";
 import ForYou from './recommend';
 import Trending from './trending.js';
 

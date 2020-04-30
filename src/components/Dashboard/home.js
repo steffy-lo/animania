@@ -2,13 +2,28 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../CSS/home.css';
 import Button from "react-bootstrap/Button";
-import ForYou from './recommend';
+import Refinement from './refinement';
 import Trending from './trending.js';
 
 class Home extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            currentPage: "trending"
+        }
+    }
+
+    displaySelectedPage() {
+        console.log(this.state)
+        if (this.state.currentPage === "trending") {
+            return <div><Refinement/><Trending/></div>
+        }
+        // else if (this.state.currentPage === "forYou") {
+        //     return <ForYou/>
+        // } else if (this.state.currentPage === "completed"){
+        //     return <Completed/>
+        // }
     }
 
     render() {
@@ -31,11 +46,11 @@ class Home extends React.Component {
                     <img className="user-icon" alt="profilepic" src={this.props.state.profile}/>
                 </div>
                 <div className="top-btns">
-                    <Button className="btn-top"variant="danger">For You</Button>
-                    <Button className="btn-top"variant="danger">Trending</Button>
-                    <Button className="btn-top"variant="danger">Completed</Button>
+                    <Button className="btn-top"variant="danger" onClick={() => this.setState({currentPage: "forYou"})}>For You</Button>
+                    <Button className="btn-top"variant="danger" onClick={() => this.setState({currentPage: "trending"})}>Trending</Button>
+                    <Button className="btn-top"variant="danger" onClick={() => this.setState({currentPage: "completed"})}>Completed</Button>
                 </div>
-                <Trending/>
+                {this.displaySelectedPage()}
             </div>
         )
     }

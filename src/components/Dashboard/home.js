@@ -2,17 +2,12 @@ import React from 'react';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
 import '../CSS/home.css'
+import Trending from './trending.js';
 
 class Home extends React.Component {
 
     constructor(props) {
         super(props);
-        this.signout = this.signout.bind(this);
-    }
-
-    signout() {
-        this.props.firebase.auth().signOut();
-        console.log("YEAH");
     }
 
     render() {
@@ -34,7 +29,12 @@ class Home extends React.Component {
                     <img src={require('../../logOut.png')} className="log-out" onClick={()=>this.props.firebase.auth().signOut()}/>
                     <img className="user-icon" alt="profilepic" src={this.props.state.profile}/>
                 </div>
-                
+                <div className="top-btns">
+                    <Button className="btn-top"variant="danger">For You</Button>
+                    <Button className="btn-top"variant="danger">Trending</Button>
+                    <Button className="btn-top"variant="danger">Completed</Button>
+                </div>
+                <Trending/>
             </div>
         )
     }

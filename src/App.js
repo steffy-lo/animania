@@ -52,7 +52,7 @@ class App extends React.Component {
                     <div>
                         <div className="form">
                             <form className="login-form">
-                                <img alt="logo" className="logo" src={require('./logo.png')}/>
+                                <img alt="logo" className="logo" src={require('./images/logo.png')}/>
                                 <StyledFirebaseAuth uiConfig={this.uiConfig} firebaseAuth={firebase.auth()}/>
                             </form>
                         </div>

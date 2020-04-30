@@ -14,6 +14,7 @@
     "react-firebaseui": "^4.1.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
+    "react-uid": "^2.2.0",
     "require": "^2.4.20"
   },
   "scripts": {

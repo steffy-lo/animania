@@ -1,0 +1,33 @@
+.for-you {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.sort {
+    display: inline-block;
+    position: relative;
+}
+
+.genres {
+    display: inline-block;
+    position: relative;
+    margin-left: 2%;
+}
+
+.genre-btn {
+    margin: 5px;
+}
+
+.display-genre {
+    margin-top: 2%;
+}
+select {
+    background-color: #424242;
+    position: relative;
+    color: white;
+    outline: 0;
+}
+
+option:checked {
+    background-color: black;
+}

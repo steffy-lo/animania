@@ -1,9 +1,9 @@
 import Button from 'react-bootstrap/Button';
 import React from 'react';
-import '../CSS/recommend.css'
+import '../CSS/refinement.css'
 import { uid } from "react-uid";
 
-class Recommend extends React.Component {
+class Refinement extends React.Component {
 
     constructor(props) {
         super(props);
@@ -120,7 +120,7 @@ class Recommend extends React.Component {
 
     render() {
         return(
-            <div className="for-you">
+            <div className="refinement">
                 <div className="sort">
                     <h6>SORT</h6>
                     <select id="sort-select" onChange={this.updateSort}>
@@ -143,4 +143,4 @@ class Recommend extends React.Component {
     }
 }
 
-export default Recommend;
+export default Refinement;

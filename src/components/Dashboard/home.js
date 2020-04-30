@@ -17,13 +17,24 @@ class Home extends React.Component {
 
     render() {
         return(
-            <div>
-                <img className="user-icon" alt="profilepic" src={this.props.state.profile}/>
-                <img className="logo-icon" alt="logo" src={require('../../logo.png')}/>
-                <img src={require('../../logOut.png')} className="log-out" onClick={()=>this.props.firebase.auth().signOut()}/>
-                <Link to="/settings">
-                    <img className="settings" alt="settings" src={require('../../settings.png')}/>
-                </Link>
+            <div className="nav-bar">
+                <div className="logoImg">
+                <img className="logo-icon" alt="logo" src={require('../../logoTitle.png')}/>
+                </div>
+                
+                <div className="search-div">
+                    <input type="text" placeholder="Search" className="search"></input>
+                    <button className="search-btn" type="submit"><img className="search-icon" src ={require('../../Search.png')}/></button>
+                </div>
+                <div className="icons">
+                    
+                    <Link to="/settings">
+                        <img className="settings" alt="settings" src={require('../../settings.png')}/>
+                    </Link>
+                    <img src={require('../../logOut.png')} className="log-out" onClick={()=>this.props.firebase.auth().signOut()}/>
+                    <img className="user-icon" alt="profilepic" src={this.props.state.profile}/>
+                </div>
+                
             </div>
         )
     }

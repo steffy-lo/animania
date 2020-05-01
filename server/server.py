@@ -17,33 +17,46 @@ app = Flask("animania")
 CORS(app)
 
 #====================================== GET METHODS ==================================================
+@app.route('/get_user/<username>', methods=["GET"])
+def get_user(username):
+    cell = user_data.findall(username)
+    if len(cell) == 0:
+        abort(404)
+    anime_list = eval(user_data.cell(cell[0].row, 2).value)
+    return jsonify({'result': {'username': username, 'animes': anime_list}})
+
 @app.route('/model_recs', methods=["GET"])
 def get_model_recommendations():
-    req = request.get_json()
-    if "type" not in req:
+    type = request.args.get('type')
+    username, anime_id = "", ""
+
+    if type is None:
         abort(400)
 
-    if req["type"] == "user":
-        if "username" not in req:
+    if type == "user":
+        username = request.args.get('username')
+
+        if username is None:
             abort(400)
-    elif req["type"] == "item":
-        if "anime_id" not in req:
+    elif type == "item":
+        anime_id = request.args.get('anime_id')
+        if anime_id is None:
             abort(400)
     else:
         abort(400)
 
-    if similarity_matrix[req["type"]] is not None:
-        similarity = similarity_matrix[req["type"]]
-        if req["type"] == "user":
+    if similarity_matrix[type] is not None:
+        similarity = similarity_matrix[type]
+        if type == "user":
             if recommendations["cached_users"]:
-                return jsonify({'top_recs': recommendations["users"]})
+                return jsonify({'result': recommendations["users"]})
             key_list, val_list = list(username_dict.keys()), list(username_dict.values())
-            arr_sim = similarity[username_dict[req["username"]]]
+            arr_sim = similarity[username_dict[username]]
         else:
             if recommendations["cached_items"]:
-                return jsonify({'top_recs': recommendations["items"]})
+                return jsonify({'result': recommendations["items"]})
             key_list, val_list = list(anime_id_dict.keys()), list(anime_id_dict.values())
-            arr_sim = similarity[anime_id_dict[req["anime_id"]]]
+            arr_sim = similarity[anime_id_dict[anime_id]]
 
         arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
 
@@ -51,16 +64,16 @@ def get_model_recommendations():
         sorted_arr = arr_recs[sim_inds]
         top_k = sorted_arr[1:11]  # k=10, the top user is always the user itself
 
-        if req["type"] == "user":
+        if type == "user":
             recommendations["users"] = top_k.tolist()  # cache results
             recommendations["cached_users"] = True
         else:
             recommendations["items"] = top_k.tolist()  # cache results
             recommendations["cached_items"] = True
 
-        return jsonify({'top_recs': top_k.tolist()})
+        return jsonify({'result': top_k.tolist()})
 
-    return jsonify({'top_recs': []})
+    return jsonify({'result': []})
 
 @app.route('/completed', methods=["GET"])
 def get_completed():
@@ -76,10 +89,10 @@ def get_completed():
 #====================================== POST METHODS =================================================
 @app.route('/add_user/<username>', methods=["POST"])
 def add_user(username):
-    row = [username, {}]
+    row = [username, "{}"]
     user_data.insert_row(row, 2)
 
-    return jsonify(row)
+    return jsonify({'result': {'username': username, 'animes': {}}})
 
 
 #====================================== DELETE METHODS ================================================
@@ -110,7 +123,7 @@ def add_completed():
 
     # modify animania google sheets database
     cell = user_data.findall(req["username"])[0]
-    anime_list = user_data.cell(cell.row, 2).value
+    anime_list = eval(user_data.cell(cell.row, 2).value)
     anime_list[req["anime_id"]] = req["score"]
     user_data.update_cell(cell.row, 2, anime_list)
 
@@ -163,4 +176,3 @@ if __name__ == "__main__":
     # Only for debugging while developing
     Thread(target=main).start()
     training = Thread(target=train)
-    training.start()

@@ -2,7 +2,6 @@ import React from 'react';
 import './App.css';
 import firebase from 'firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
-
 import Main from './components/Main';
 
 firebase.initializeApp({
@@ -37,7 +36,8 @@ class App extends React.Component {
           })
           if (this.state.isSignedIn){
             this.setState({
-                profile: user.photoURL
+                username: user.displayName.split(" ").join(""),
+                profilePic: user.photoURL
             })
         }
       })

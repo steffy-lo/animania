@@ -4,6 +4,7 @@ import '../CSS/home.css';
 import Button from "react-bootstrap/Button";
 import Trending from './trending';
 import ForYou from './recommend';
+import Completed from './completed';
 import { getUser, addUser } from '../Actions/dashboard';
 
 class Home extends React.Component {
@@ -11,7 +12,8 @@ class Home extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentPage: "trending"
+            currentPage: "trending",
+            username: this.props.state.username
         };
 
         this.getUserData = this.getUserData.bind(this);
@@ -48,9 +50,9 @@ class Home extends React.Component {
         else if (this.state.currentPage === "forYou") {
             return <ForYou username={this.state.username} animes={this.state.animes}/>
         }
-        // else if (this.state.currentPage === "completed"){
-        //     return <Completed/>
-        // }
+        else if (this.state.currentPage === "completed"){
+            return <Completed animes={this.state.animes}/>
+        }
     }
 
     render() {

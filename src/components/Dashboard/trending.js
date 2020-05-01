@@ -1,4 +1,5 @@
 import React from 'react';
+import Refinement from './refinement';
 import '../CSS/trending.css'
 
 class Trending extends React.Component {
@@ -60,8 +61,11 @@ class Trending extends React.Component {
                 )
             });
             return(
-                <div className="trend-container">
-                    {animeTitles}
+                <div>
+                    <Refinement/>
+                    <div className="trend-container">
+                        {animeTitles}
+                    </div>
                 </div>
             )
         }

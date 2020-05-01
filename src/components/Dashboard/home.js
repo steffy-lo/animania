@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../CSS/home.css';
 import Button from "react-bootstrap/Button";
-import Refinement from './refinement';
-import Trending from './trending.js';
+import Trending from './trending';
+import ForYou from './recommend';
 
 class Home extends React.Component {
 
@@ -15,13 +15,13 @@ class Home extends React.Component {
     }
 
     displaySelectedPage() {
-        console.log(this.state)
         if (this.state.currentPage === "trending") {
-            return <div><Refinement/><Trending/></div>
+            return <Trending/>
         }
-        // else if (this.state.currentPage === "forYou") {
-        //     return <ForYou/>
-        // } else if (this.state.currentPage === "completed"){
+        else if (this.state.currentPage === "forYou") {
+            return <ForYou/>
+        }
+        // else if (this.state.currentPage === "completed"){
         //     return <Completed/>
         // }
     }
@@ -35,14 +35,13 @@ class Home extends React.Component {
                 
                 <div className="search-div">
                     <input type="text" placeholder="Search" className="search"/>
-                    <button className="search-btn" type="submit"><img className="search-icon" src ={require('../../images/Search.png')}/></button>
+                    <button className="search-btn" type="submit"><img className="search-icon" src ={require('../../images/search.png')}/></button>
                 </div>
                 <div className="icons">
-                    
                     <Link to="/settings">
                         <img className="settings" alt="settings" src={require('../../images/settings.png')}/>
                     </Link>
-                    <img src={require('../../images/logOut.png')} className="log-out" onClick={()=>this.props.firebase.auth().signOut()}/>
+                    <img src={require('../../images/logout.png')} className="log-out" onClick={()=>this.props.firebase.auth().signOut()}/>
                     <img className="user-icon" alt="profilepic" src={this.props.state.profile}/>
                 </div>
                 <div className="top-btns">

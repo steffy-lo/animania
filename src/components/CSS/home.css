@@ -83,11 +83,13 @@ button.btn-primary:hover, button.btn-primary:active, button.btn-primary:visited,
 .search-btn{
     width: 8%;
     height: 29px;
+    min-width: 30px;
 }
 
 .search-icon{
     max-width: 30%;
     min-width: 10px;
+    padding: 1%;
 }
 
 .nav-bar{

@@ -164,7 +164,7 @@ def add_completed():
 
 def build_item_matrix(anime_id):
     user_stats = pd.DataFrame(review_sheet.get_all_records()).sample(n=10000)
-    cells = review_sheet.findall(anime_id)[:10]
+    cells = review_sheet.findall(anime_id)[:20]
 
     for c in cells:
         user_stats = user_stats.append({'profile': review_sheet.cell(c.row, 1).value,

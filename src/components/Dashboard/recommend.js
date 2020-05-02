@@ -10,6 +10,7 @@ class Recommend extends React.Component {
             recommendations: [],
             loaded: false
         };
+        this.loadRecommendations = this.loadRecommendations.bind(this);
         this.getAnimes = this.getAnimes.bind(this);
     }
 
@@ -17,20 +18,21 @@ class Recommend extends React.Component {
         // want to get top 5 animes from most similar users
     }
 
-    componentDidMount() {
-        const component = this;
+    loadRecommendations() {
         getRecommendations(this.props.username, "user")
             .then(recs => {
-                console.log(recs)
+                console.log(recs);
                 if (recs.length > 0) {
                     this.setState({similarUsers: recs},
-                        () => component.getAnimes(recs))
+                        () => this.getAnimes(recs))
                 }
             })
             .catch(err => {
                 console.log(err)
             })
-
+    }
+    componentDidMount() {
+        setTimeout(this.loadRecommendations, 0);
     }
 
     render() {
@@ -56,7 +58,7 @@ class Recommend extends React.Component {
             return (
                 <div className="loading-msg">
                     <h1>Getting your personalized Anime recommendations list...</h1>
-                    <h3>Please check back again later. This might take up to a few minutes.</h3>
+                    <h3>Please wait or check back again later. This might take up to a few minutes.</h3>
                 </div>
             )
         } else {

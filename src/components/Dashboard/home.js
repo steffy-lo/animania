@@ -48,7 +48,7 @@ class Home extends React.Component {
             return <Trending/>
         }
         else if (this.state.currentPage === "forYou") {
-            return <ForYou username={this.state.username} animes={this.state.animes}/>
+            return <ForYou username={this.props.state.username} animes={this.state.animes}/>
         }
         else if (this.state.currentPage === "completed"){
             return <Completed animes={this.state.animes}/>

@@ -10,26 +10,22 @@ class Recommend extends React.Component {
             recommendations: [],
             loaded: false
         };
+        this.fetching = false;
         this.loadRecommendations = this.loadRecommendations.bind(this);
-        this.getAnimes = this.getAnimes.bind(this);
-    }
-
-    getAnimes(similarUsers) {
-        // want to get top 5 animes from most similar users
     }
 
     loadRecommendations() {
-        getRecommendations(this.props.username, "user")
-            .then(recs => {
-                console.log(recs);
-                if (recs.length > 0) {
-                    this.setState({similarUsers: recs},
-                        () => this.getAnimes(recs))
-                }
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        if (!this.fetching) {
+            this.fetching = true;
+            getRecommendations(this.props.username, "user")
+                .then(recs => {
+                    console.log(recs);
+                    this.setState({recommendations: recs}, () => this.fetching = false)
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
     }
     componentDidMount() {
         setTimeout(this.loadRecommendations, 0);

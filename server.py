@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
 from threading import Thread
-import os
+import os, time
 from pprint import pprint
 
 import numpy as np
@@ -25,7 +25,7 @@ review_sheet = client.open("reviews").sheet1
 user_data = client.open("animania").sheet1
 user_matrix = {}
 item_matrix = {}
-recommendations = {}
+recommendations = {"user": {}, "item": {}}
 
 app = Flask("animania")
 CORS(app)
@@ -64,19 +64,26 @@ def get_model_recommendations():
         else:
             similarity, username_dict = build_user_matrix(username)
             user_matrix[username] = similarity, username_dict  # cache results
-        key_list, val_list = list(username_dict.keys()), list(username_dict.values())
-        arr_sim = similarity[username_dict[username]]
-
-        arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
-        sim_inds = arr_sim.argsort()
-        sorted_arr = arr_recs[sim_inds]
-        top_k = sorted_arr[1:4]  # k=3, the top user is always the user itself
 
         top_recs = []
-        for user in top_k:
-            animelist = sorted(jikan.user(username=user, request='animelist')['anime'], key=score, reverse=True)[:2]
-            for anime in animelist:
-                top_recs.append(jikan.anime(anime["mal_id"]))
+        if username in recommendations["user"]:
+            top_recs = recommendations["user"][username]
+        else:
+            key_list, val_list = list(username_dict.keys()), list(username_dict.values())
+            arr_sim = similarity[username_dict[username]]
+
+            arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
+            sim_inds = arr_sim.argsort()
+            sorted_arr = arr_recs[sim_inds]
+            top_k = sorted_arr[1:6]  # k=5, the top user is always the user itself
+
+            for user in top_k:
+                if user == username:
+                    continue
+                animelist = sorted(jikan.user(username=user, request='animelist')['anime'], key=by_score, reverse=True)[:5]
+                anime_ids = [anime["mal_id"] for anime in animelist]
+                top_recs.extend(anime_ids)
+            recommendations["user"][username] = top_recs
 
         return jsonify({'result': top_recs})
 
@@ -86,19 +93,18 @@ def get_model_recommendations():
         else:
             similarity, anime_id_dict = build_item_matrix(anime_id)
             item_matrix[anime_id] = similarity, anime_id_dict  # cache results
-        key_list, val_list = list(anime_id_dict.keys()), list(anime_id_dict.values())
-        arr_sim = similarity[anime_id_dict[anime_id]]
 
-        arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
-        sim_inds = arr_sim.argsort()
-        sorted_arr = arr_recs[sim_inds]
-        top_k = sorted_arr[1:4]  # k=3, the top anime is always the anime itself
+        if anime_id in recommendations["item"]:
+            return jsonify({'result': recommendations["items"][anime_id]})
+        else:
+            key_list, val_list = list(anime_id_dict.keys()), list(anime_id_dict.values())
+            arr_sim = similarity[anime_id_dict[int(anime_id)]]
+            arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
+            sim_inds = arr_sim.argsort()
+            sorted_arr = arr_recs[sim_inds]
+            top_k = sorted_arr[1:11]  # k=11, the top anime is always the anime itself
 
-        top_recs = []
-        for anime_id in top_k:
-            top_recs.append(jikan.anime(anime_id))
-
-        return jsonify({'result': top_recs})
+            return jsonify({'result': top_k.tolist()})
 
 
 @app.route('/completed', methods=["GET"])
@@ -158,7 +164,7 @@ def add_completed():
 
 def build_item_matrix(anime_id):
     user_stats = pd.DataFrame(review_sheet.get_all_records()).sample(n=10000)
-    cells = review_sheet.findall(anime_id)
+    cells = review_sheet.findall(anime_id)[:10]
 
     for c in cells:
         user_stats = user_stats.append({'profile': review_sheet.cell(c.row, 1).value,
@@ -181,12 +187,13 @@ def build_item_matrix(anime_id):
 
 def build_user_matrix(username):
     user_stats = pd.DataFrame(review_sheet.get_all_records()).sample(n=10000)
-    cells = review_sheet.findall(username)
+    cell = user_data.findall(username)[0]
+    anime_list = eval(user_data.cell(cell.row, 2).value)
 
-    for c in cells:
-        user_stats = user_stats.append({'profile': review_sheet.cell(c.row, 1).value,
-                                        'anime_uid': int(review_sheet.cell(c.row, 2).value),
-                                        'score': int(review_sheet.cell(c.row, 3).value)}, ignore_index=True)
+    for anime_id, score in anime_list.items():
+        user_stats = user_stats.append({'profile': username,
+                                        'anime_uid': int(anime_id),
+                                        'score': int(score)}, ignore_index=True)
     user_stats.drop_duplicates(inplace=True)
     username_dict = dict(zip([val for val in user_stats['profile'].unique()],
                              [i for i, val in enumerate(user_stats['profile'].unique())]))
@@ -202,7 +209,7 @@ def build_user_matrix(username):
     return pairwise_distances(train_data_matrix, metric='cosine'), username_dict
 
 
-def score(anime):
+def by_score(anime):
     return anime["score"]
 
 

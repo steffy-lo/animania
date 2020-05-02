@@ -1,7 +1,7 @@
 import React from 'react';
 import '../CSS/recommend.css'
 import Refinement from "./refinement";
-import { getRecommendations } from '../Actions/dashboard';
+import {makeRequest, getRecommendations} from '../Actions/dashboard';
 
 class Recommend extends React.Component {
     constructor(props) {
@@ -10,22 +10,34 @@ class Recommend extends React.Component {
             recommendations: [],
             loaded: false
         };
-        this.fetching = false;
+        this.getAnimeInfo = this.getAnimeInfo.bind(this);
         this.loadRecommendations = this.loadRecommendations.bind(this);
     }
 
+    getAnimeInfo(anime_id) {
+        makeRequest('GET', "https://api.jikan.moe/v3/anime/" + anime_id)
+            .then(info => {
+                this.setState({recommendations: [...this.state.recommendations, JSON.parse(info)]})
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
     loadRecommendations() {
-        if (!this.fetching) {
-            this.fetching = true;
-            getRecommendations(this.props.username, "user")
-                .then(recs => {
-                    console.log(recs);
-                    this.setState({recommendations: recs}, () => this.fetching = false)
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-        }
+        getRecommendations(this.props.username, "user")
+            .then(recs => {
+                console.log(recs);
+                for (let i = 0; i < recs.length; i++) {
+                    this.getAnimeInfo(recs[i])
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+            .finally(() => {
+                this.setState({loaded: true})
+            })
     }
     componentDidMount() {
         setTimeout(this.loadRecommendations, 0);

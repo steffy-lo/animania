@@ -2,10 +2,14 @@ from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
 from threading import Thread
 import os
+from pprint import pprint
 
 import numpy as np
 import pandas as pd
 from sklearn.metrics.pairwise import pairwise_distances
+
+from jikanpy import Jikan
+jikan = Jikan()
 
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -61,6 +65,19 @@ def get_model_recommendations():
             user_matrix[username] = similarity, username_dict  # cache results
         key_list, val_list = list(username_dict.keys()), list(username_dict.values())
         arr_sim = similarity[username_dict[username]]
+
+        arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
+        sim_inds = arr_sim.argsort()
+        sorted_arr = arr_recs[sim_inds]
+        top_k = sorted_arr[1:11]  # k=10, the top user is always the user itself
+
+        top_recs = []
+        for user in top_k:
+            animelist = sorted(jikan.user(username=user, request='animelist')['anime'], key=score, reverse=True)[:5]
+            top_recs.extend(animelist)
+
+        return jsonify({'result': top_recs})
+
     else:
         if anime_id in item_matrix:
             similarity, anime_id_dict = item_matrix[anime_id]
@@ -70,12 +87,16 @@ def get_model_recommendations():
         key_list, val_list = list(anime_id_dict.keys()), list(anime_id_dict.values())
         arr_sim = similarity[anime_id_dict[anime_id]]
 
-    arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
-    sim_inds = arr_sim.argsort()
-    sorted_arr = arr_recs[sim_inds]
-    top_k = sorted_arr[1:11]  # k=10, the top user/anime is always the user/anime itself
+        arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
+        sim_inds = arr_sim.argsort()
+        sorted_arr = arr_recs[sim_inds]
+        top_k = sorted_arr[1:11]  # k=10, the top anime is always the anime itself
 
-    return jsonify({'result': top_k.tolist()})
+        top_recs = []
+        for anime_id in top_k:
+            top_recs.append(jikan.anime(anime_id))
+
+        return jsonify({'result': top_recs})
 
 
 @app.route('/completed', methods=["GET"])
@@ -177,6 +198,10 @@ def build_user_matrix(username):
         train_data_matrix[username_dict[line[1]] - 1, anime_id_dict[line[2]] - 1] = line[3]
 
     return pairwise_distances(train_data_matrix, metric='cosine'), username_dict
+
+
+def score(anime):
+    return anime["score"]
 
 
 def main():

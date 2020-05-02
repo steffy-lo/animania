@@ -25,6 +25,7 @@ review_sheet = client.open("reviews").sheet1
 user_data = client.open("animania").sheet1
 user_matrix = {}
 item_matrix = {}
+recommendations = {}
 
 app = Flask("animania")
 CORS(app)
@@ -69,12 +70,13 @@ def get_model_recommendations():
         arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
         sim_inds = arr_sim.argsort()
         sorted_arr = arr_recs[sim_inds]
-        top_k = sorted_arr[1:11]  # k=10, the top user is always the user itself
+        top_k = sorted_arr[1:4]  # k=3, the top user is always the user itself
 
         top_recs = []
         for user in top_k:
-            animelist = sorted(jikan.user(username=user, request='animelist')['anime'], key=score, reverse=True)[:5]
-            top_recs.extend(animelist)
+            animelist = sorted(jikan.user(username=user, request='animelist')['anime'], key=score, reverse=True)[:2]
+            for anime in animelist:
+                top_recs.append(jikan.anime(anime["mal_id"]))
 
         return jsonify({'result': top_recs})
 
@@ -90,7 +92,7 @@ def get_model_recommendations():
         arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
         sim_inds = arr_sim.argsort()
         sorted_arr = arr_recs[sim_inds]
-        top_k = sorted_arr[1:11]  # k=10, the top anime is always the anime itself
+        top_k = sorted_arr[1:4]  # k=3, the top anime is always the anime itself
 
         top_recs = []
         for anime_id in top_k:

@@ -150,9 +150,6 @@ def add_completed():
         if key not in req:
             abort(400)
 
-    row = [req["username"], req["anime_id"], req["score"]]
-    review_sheet.insert_row(row, 2)
-
     # modify animania google sheets database
     cell = user_data.findall(req["username"])[0]
     anime_list = eval(user_data.cell(cell.row, 2).value)

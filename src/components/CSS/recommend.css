@@ -1,3 +1,26 @@
 .loading-msg {
     margin: 5%;
 }
+
+.btn-card {
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-bottom: 5%;
+}
+
+.titleName {
+    width:100%;
+    background-color: black;
+    color:white;
+    text-align: center;
+}
+
+.titles-container .card{
+    display: inline-block;
+    margin: 0.85%;
+}
+
+.titles-container .img {
+    width: 100%;
+    height: 100%;
+}

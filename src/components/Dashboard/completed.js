@@ -1,5 +1,8 @@
 import React from 'react';
 import '../CSS/completed.css'
+import {uid} from "react-uid";
+import {Button, Card} from "react-bootstrap";
+import {makeRequest} from "../Actions/dashboard";
 
 class Completed extends React.Component {
     constructor(props) {
@@ -12,11 +15,17 @@ class Completed extends React.Component {
     }
 
     getAnimes() {
-        const anime_ids = Object.keys(this.props.animes)
-        if (anime_ids.length === 0) {
-            this.setState({loaded: true})
-        } else {
-            // get anime titles from the anime ids and update state
+        for (let key of Object.keys(this.props.animes)) {
+            makeRequest('GET', "https://api.jikan.moe/v3/anime/" + key)
+            .then(info => {
+                this.setState({completed: [...this.state.completed, JSON.parse(info)]})
+            })
+            .catch(err => {
+                console.log(err)
+            })
+            .finally(() => {
+                this.setState({loaded: true})
+            })
         }
     }
 
@@ -28,19 +37,29 @@ class Completed extends React.Component {
         if (this.state.loaded) {
             const animeTitles = this.state.completed.map(title => {
                 return(
-                    <div className = "anime-container">
-                        <img alt="" className="anime-img" src = {title.image_url}/>
-                        <div className="titles">{title.title}</div>
-                    </div>
+                    <Card style={{ width: '17rem' }} key={uid(title)}>
+                        <Card.Img variant="top" src={title.image_url}/>
+                        <Card.Title className="titleName">{title.title}</Card.Title>
+                        <Button className="btn-card" variant="danger">Edit Review</Button>
+                    </Card>
                 )
             });
-            return(
-                <div>
-                    <div className="trend-container">
-                        {animeTitles}
+            if (animeTitles.length > 0) {
+                return (
+                    <div className="scroll">
+                        <div className="titles-container">
+                            {animeTitles}
+                        </div>
                     </div>
-                </div>
-            )
+                )
+            } else {
+                return (
+                    <div className="loading-msg">av
+                        <h1>Getting Started...</h1>
+                        <h3>Start by adding an anime to your completed list.</h3>
+                    </div>
+                );
+            }
         }
         return (
             <div className="loading-msg">

@@ -7,22 +7,31 @@ class Settings extends React.Component {
 
     render() {
         return(
-            <div>
-                <div className="home">
-                    <Link to="/">
-                        <Button>Home</Button>
-                    </Link>
+            <div className="nav-bar">
+                <div className="logoImg">
+                    <img className="logo-icon" alt="logo" src={require('../../images/logoTitle.png')}/>
                 </div>
-                <Button className="signOut" onClick={() => this.props.firebase.auth().signOut()}>Sign Out</Button>
-                <dl className="form">
-                    <label>Update Password</label>
+                <div className="search-div">
+                </div>
+                <div className="icons">
+                    <Link to="/">
+                        <img className="home" alt="home" src={require('../../images/home.png')}/>
+                    </Link>
+                    <img alt="log out" src={require('../../images/logout.png')} className="log-out" onClick={()=>this.props.firebase.auth().signOut()}/>
+                    <img className="user-icon" alt="profilepic" src={this.props.state.profilePic}/>
+                </div>
+                <dl className="settings-form">
+                    <h3>Modify the Recommendation Algorithm</h3>
+                    <p>Finds <i>k</i> users who are most similar to you and then picks out <i>n</i> of their most favourite animes. This matches k * n animes that you might like to try out!</p>
+                    <p> Note that by default, k = 5 and n = 5. You can change the value of <i>n</i> and <i>k</i> by entering their new values below.</p>
+                    <p> Warning: Increasing k or n might result in longer waiting times for your curated recommendations list to appear.</p>
                     <div>
                         <div>
-                            <input type="password" id="inputPassword"  placeholder="Current Password"/>
-                            <input type="password" id="inputPasswordNew" placeholder="New Password"/>
+                            <input type="password" id="inputPassword"  placeholder="k"/>
+                            <input type="password" id="inputPasswordNew" placeholder="n"/>
                         </div>
                     </div>
-                    <p><Button id="save-settings" type="click">Update Settings</Button></p>
+                    <p><Button variant="danger" id="save-settings" type="click">Update Values</Button></p>
                 </dl>
             </div>
         )

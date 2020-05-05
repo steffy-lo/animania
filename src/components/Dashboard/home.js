@@ -6,6 +6,7 @@ import Trending from './trending';
 import ForYou from './recommend';
 import Completed from './completed';
 import { getUser, addUser } from '../Actions/dashboard';
+import Refinement from "./refinement";
 
 class Home extends React.Component {
 
@@ -44,13 +45,12 @@ class Home extends React.Component {
 
 
     displaySelectedPage() {
+        console.log(this.state.loaded)
         if (this.state.currentPage === "trending") {
             return <Trending/>
-        }
-        else if (this.state.currentPage === "forYou") {
+        } else if (this.state.currentPage === "forYou") {
             return <ForYou username={this.props.state.username} animes={this.state.animes}/>
-        }
-        else if (this.state.currentPage === "completed"){
+        } else if (this.state.currentPage === "completed") {
             return <Completed animes={this.state.animes}/>
         }
     }
@@ -74,9 +74,9 @@ class Home extends React.Component {
                     <img className="user-icon" alt="profilepic" src={this.props.state.profilePic}/>
                 </div>
                 <div className="top-btns">
-                    <Button className="btn-top"variant="danger" onClick={() => this.setState({currentPage: "forYou"})}>For You</Button>
-                    <Button className="btn-top"variant="danger" onClick={() => this.setState({currentPage: "trending"})}>Trending</Button>
-                    <Button className="btn-top"variant="danger" onClick={() => this.setState({currentPage: "completed"})}>Completed</Button>
+                    <Button className="btn-top" variant="danger" onClick={() => this.setState({currentPage: "trending"})}>Trending</Button>
+                    <Button className="btn-top" variant="danger" onClick={() => this.setState({currentPage: "forYou"})}>For You</Button>
+                    <Button className="btn-top" variant="danger" onClick={() => this.setState({currentPage: "completed"})}>Completed</Button>
                 </div>
                 {this.displaySelectedPage()}
             </div>

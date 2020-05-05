@@ -10,7 +10,7 @@ class Main extends React.Component {
             <BrowserRouter>
                 <Switch>
                     <Route exact path={'/'} render={() => <Home firebase={this.props.firebase} state={this.props.state}/>}/>
-                    <Route exact path={'/settings'} render={() => <Settings firebase={this.props.firebase}/>}/>
+                    <Route exact path={'/settings'} render={() => <Settings firebase={this.props.firebase} state={this.props.state}/>}/>
                 </Switch>
             </BrowserRouter>
         )

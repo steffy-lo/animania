@@ -5,32 +5,24 @@
     top: 20px;
 }
 
-.home button {
-    position: absolute;
-    width: 100px;
-    right: 130px;
-    top: 20px;
+.home {
+    margin-right:15%;
+    margin-top: 1%;
+    max-width: 10%;
+    min-width: 15px;
 }
 
-button.btn-primary {
-    background-color: red;
-    border-color: red;
-}
-
-button.btn-primary:hover, button.btn-primary:active, button.btn-primary:visited {
-    background-color: firebrick;
-    border-color: firebrick;
-}
-
-.form {
+.settings-form {
     position: relative;
-    background: #FFFFFF;
-    max-width: 360px;
+    z-index: 1;
+    max-width: 700px;
+    margin: 50px auto 100px;
+    padding: 50px;
     text-align: center;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
 }
 
-.form input {
+.settings-form input {
     outline: 0;
     background: #f2f2f2;
     width: 100%;

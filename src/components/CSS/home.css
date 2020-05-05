@@ -1,3 +1,8 @@
+.scroll {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    max-height: 80vh;
+}
 
 .logo-icon {
     display:inline-block;
@@ -22,7 +27,7 @@
 
 .user-icon{
     margin-right:20%;
-    margin-top: 1.2%;
+    margin-top: 1%;
     max-width: 12%;
     min-width: 18px;
     border-radius: 50%;
@@ -33,13 +38,6 @@
     padding-left:3%;
     margin:0 auto;
     box-shadow: 0px 15px 15px -18px #111
-}
-
-button.btn-primary:hover, button.btn-primary:active, button.btn-primary:visited, button.btn-primary:focus {
-    outline: none;
-    box-shadow: none;
-    background-color: firebrick;
-    border-color: firebrick;
 }
 
 .btn-top {
@@ -63,6 +61,7 @@ button.btn-primary:hover, button.btn-primary:active, button.btn-primary:visited,
 }
 
 .icons{
+    margin-top: 1.6%;
     display: inline-block;
     width:20%;
     text-align: right;

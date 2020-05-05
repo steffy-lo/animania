@@ -2,6 +2,7 @@ import React from 'react';
 import Refinement from './refinement';
 import { makeRequest } from '../Actions/dashboard'
 import '../CSS/trending.css'
+import { uid } from "react-uid";
 
 class Trending extends React.Component {
     constructor(props) {
@@ -24,10 +25,10 @@ class Trending extends React.Component {
 
     render() {
         if (this.state.loaded) {
-            const animeTitles = this.state.results.map(title=>{
+            const animeTitles = this.state.results.map(title =>{
                 return(
-                    <div className = "anime-container">
-                        <img className="anime-img" src = {title.image_url}/>
+                    <div className = "anime-container" key={uid(title)}>
+                        <img alt="" className="anime-img" src = {title.image_url}/>
                         <div className="titles">{title.title}</div>
                     </div>
                 )

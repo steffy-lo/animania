@@ -75,17 +75,24 @@ def get_model_recommendations():
             arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
             sim_inds = arr_sim.argsort()
             sorted_arr = arr_recs[sim_inds]
-            top_k = sorted_arr[1:6]  # k=5, the top user is always the user itself
+            top_k = []
+            i = 1
+            while True and len(top_k) < 5 and i < 10:
+                try:
+                    user = sorted_arr[i]
+                    animelist = sorted(jikan.user(username=user, request='animelist')['anime'], key=by_score,
+                                       reverse=True)[:7]
+                    top_k.append(user)
+                    anime_ids = [anime["mal_id"] for anime in animelist]
+                    top_recs.extend(anime_ids)
+                    i += 1
+                except:
+                    print("An unexpected API error occured.")  # user might have a private animelist
+                    pass
 
-            for user in top_k:
-                if user == username:
-                    continue
-                animelist = sorted(jikan.user(username=user, request='animelist')['anime'], key=by_score, reverse=True)[:5]
-                anime_ids = [anime["mal_id"] for anime in animelist]
-                top_recs.extend(anime_ids)
-            recommendations["user"][username] = top_recs
+            recommendations["user"][username] = list(set(top_recs))[:25]
 
-        return jsonify({'result': top_recs})
+        return jsonify({'result': list(set(top_recs))[:25]})
 
     else:
         if anime_id in item_matrix:
@@ -103,8 +110,9 @@ def get_model_recommendations():
             sim_inds = arr_sim.argsort()
             sorted_arr = arr_recs[sim_inds]
             top_k = sorted_arr[1:11]  # k=11, the top anime is always the anime itself
+            recommendations["item"][anime_id] = list(set(top_k.tolist()))
 
-            return jsonify({'result': top_k.tolist()})
+            return jsonify({'result': list(set(top_k.tolist()))})
 
 
 @app.route('/completed', methods=["GET"])

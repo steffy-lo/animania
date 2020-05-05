@@ -2,6 +2,7 @@ import React from 'react';
 import '../CSS/recommend.css'
 import Refinement from "./refinement";
 import {makeRequest, getRecommendations} from '../Actions/dashboard';
+import {uid} from "react-uid";
 
 class Recommend extends React.Component {
     constructor(props) {
@@ -29,7 +30,7 @@ class Recommend extends React.Component {
             .then(recs => {
                 console.log(recs);
                 for (let i = 0; i < recs.length; i++) {
-                    this.getAnimeInfo(recs[i])
+                    this.getAnimeInfo(recs[i]);
                 }
             })
             .catch(err => {
@@ -47,8 +48,8 @@ class Recommend extends React.Component {
         if (this.state.loaded) {
             const animeTitles = this.state.recommendations.map(title => {
                 return(
-                    <div className = "anime-container">
-                        <img className="anime-img" src = {title.image_url}/>
+                    <div className = "anime-container" key={uid(title)}>
+                        <img alt="" className="anime-img" src = {title.image_url}/>
                         <div className="titles">{title.title}</div>
                     </div>
                 )

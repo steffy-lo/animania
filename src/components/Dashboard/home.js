@@ -64,13 +64,13 @@ class Home extends React.Component {
 
                 <div className="search-div">
                     <input type="text" placeholder="Search" className="search"/>
-                    <button className="search-btn" type="submit"><img className="search-icon" src ={require('../../images/search.png')}/></button>
+                    <button className="search-btn" type="submit"><img alt="search" className="search-icon" src ={require('../../images/search.png')}/></button>
                 </div>
                 <div className="icons">
                     <Link to="/settings">
                         <img className="settings" alt="settings" src={require('../../images/settings.png')}/>
                     </Link>
-                    <img src={require('../../images/logout.png')} className="log-out" onClick={()=>this.props.firebase.auth().signOut()}/>
+                    <img alt="log out" src={require('../../images/logout.png')} className="log-out" onClick={()=>this.props.firebase.auth().signOut()}/>
                     <img className="user-icon" alt="profilepic" src={this.props.state.profilePic}/>
                 </div>
                 <div className="top-btns">

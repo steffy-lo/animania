@@ -29,7 +29,7 @@ class Completed extends React.Component {
             const animeTitles = this.state.completed.map(title => {
                 return(
                     <div className = "anime-container">
-                        <img className="anime-img" src = {title.image_url}/>
+                        <img alt="" className="anime-img" src = {title.image_url}/>
                         <div className="titles">{title.title}</div>
                     </div>
                 )

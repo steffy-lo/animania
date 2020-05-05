@@ -1,4 +1,4 @@
-import Button from 'react-bootstrap/Button';
+import { Button, Form } from 'react-bootstrap';
 import React from 'react';
 import '../CSS/refinement.css'
 import { uid } from "react-uid";
@@ -105,7 +105,7 @@ class Refinement extends React.Component {
                 <div className="display-genre">
                     <h6>*Click to add genre and double-click to remove genre</h6>
                     {Object.keys(this.state.genres).map((genre, index) => (
-                        <Button key={uid(genre)} id={"genre" + index.toString()}
+                        <Button variant="danger" key={uid(genre)} id={"genre" + index.toString()}
                                 onClick={e => this.addRemoveGenre(e, "genre" + index.toString())}
                                 value={genre}
                                 className="genre-btn">{genre}</Button>
@@ -136,6 +136,15 @@ class Refinement extends React.Component {
                         <option value="none">None</option>
                         <option value="select">Select</option>
                     </select>
+                </div>
+                <div className="watch-filter">
+                    <Form.Check
+                        custom
+                        inline
+                        label="Not Watched"
+                        type="checkbox"
+                        id={`custom-inline-checkbox-1`}
+                    />
                 </div>
                 {this.displayGenres()}
             </div>

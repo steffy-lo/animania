@@ -1,12 +1,7 @@
-/*html, body {*/
-/*  height: 100%;*/
-/*  background-color: #90ccff;*/
-/*}*/
-
 .form {
   position: relative;
   z-index: 1;
-  background: #ffe7de;
+  background: #424242;
   max-width: 360px;
   margin: 50px auto 100px;
   padding: 50px;

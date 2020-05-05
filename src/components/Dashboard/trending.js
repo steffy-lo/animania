@@ -3,6 +3,7 @@ import Refinement from './refinement';
 import { makeRequest } from '../Actions/dashboard'
 import '../CSS/trending.css'
 import { uid } from "react-uid";
+import {Button, Card} from "react-bootstrap";
 
 class Trending extends React.Component {
     constructor(props) {
@@ -27,16 +28,17 @@ class Trending extends React.Component {
         if (this.state.loaded) {
             const animeTitles = this.state.results.map(title =>{
                 return(
-                    <div className = "anime-container" key={uid(title)}>
-                        <img alt="" className="anime-img" src = {title.image_url}/>
-                        <div className="titles">{title.title}</div>
-                    </div>
+                    <Card style={{ width: '17rem' }} key={uid(title)}>
+                        <Card.Img variant="top" src={title.image_url}/>
+                        <Card.Title className="titleName">{title.title}</Card.Title>
+                        <Button className="btn-card" variant="danger">+ Watch List</Button>
+                    </Card>
                 )
             });
             return(
-                <div>
+                <div className="scroll">
                     <Refinement/>
-                    <div className="trend-container">
+                    <div className="titles-container">
                         {animeTitles}
                     </div>
                 </div>

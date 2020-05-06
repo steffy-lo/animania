@@ -1,14 +1,12 @@
-from flask import Flask, jsonify, request, abort
-from flask_cors import CORS
+import os
 from threading import Thread
-import os, time
-from pprint import pprint
 
 import numpy as np
 import pandas as pd
-from sklearn.metrics.pairwise import pairwise_distances
-
+from flask import Flask, jsonify, request, abort
+from flask_cors import CORS
 from jikanpy import Jikan
+from sklearn.metrics.pairwise import pairwise_distances
 
 jikan = Jikan()
 
@@ -201,8 +199,7 @@ def add_to_watch():
 @app.route('/settings', methods=["PATCH"])
 def settings():
     req = request.get_json()
-    print(req)
-    
+
     if "username" not in req:
         abort(400)
 

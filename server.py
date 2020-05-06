@@ -59,6 +59,8 @@ def get_model_recommendations():
         abort(400)
 
     if type == "user":
+        k = 10
+        n = 10
         if username in user_matrix:
             similarity, username_dict = user_matrix[username]
         else:
@@ -77,24 +79,24 @@ def get_model_recommendations():
             sorted_arr = arr_recs[sim_inds]
             top_k = []
             i = 1
-            while True and len(top_k) < 5 and i < 10:
+            while True and len(top_k) < k and i < k*2:
                 try:
                     user = sorted_arr[i]
                     animelist = sorted(jikan.user(username=user, request='animelist')['anime'], key=by_score,
-                                       reverse=True)[:7]
+                                       reverse=True)[:n*2]
                     top_k.append(user)
                     anime_ids = [anime["mal_id"] for anime in animelist]
                     top_recs.extend(anime_ids)
-                    i += 1
                 except:
                     print("An unexpected API error occured.")  # user might have a private animelist
-                    pass
+                i += 1
 
-            recommendations["user"][username] = list(set(top_recs))[:25]
+            recommendations["user"][username] = list(set(top_recs))[:k*n]
 
-        return jsonify({'result': list(set(top_recs))[:25]})
+        return jsonify({'result': list(set(top_recs))[:k*n]})
 
     else:
+        k = 10
         if anime_id in item_matrix:
             similarity, anime_id_dict = item_matrix[anime_id]
         else:
@@ -109,7 +111,7 @@ def get_model_recommendations():
             arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
             sim_inds = arr_sim.argsort()
             sorted_arr = arr_recs[sim_inds]
-            top_k = sorted_arr[1:11]  # k=11, the top anime is always the anime itself
+            top_k = sorted_arr[1:k]  # k=10, the top anime is always the anime itself
             recommendations["item"][anime_id] = list(set(top_k.tolist()))
 
             return jsonify({'result': list(set(top_k.tolist()))})

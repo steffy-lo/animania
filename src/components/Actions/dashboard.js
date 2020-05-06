@@ -54,7 +54,7 @@ export const makeRequest = (method, url, data) => {
                 } else {
                     setTimeout(()=>{
                         tryRequest()
-                    }, 3000)
+                    }, (Math.floor(Math.random() * 60) + 2) * 1000);
                 }
             };
             if (method === "POST" && data) {

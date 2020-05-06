@@ -30,7 +30,7 @@ class Completed extends React.Component {
     }
 
     componentDidMount() {
-        setTimeout(this.getAnimes, 0)
+        setTimeout(this.getAnimes, 1000)
     }
 
     render() {
@@ -56,7 +56,9 @@ class Completed extends React.Component {
                 return (
                     <div className="loading-msg">av
                         <h1>Getting Started...</h1>
-                        <h3>Start by adding an anime to your completed list.</h3>
+                        <h3>Start by adding an anime to your completed list as follows:</h3>
+                        <h3>Step 1. Search up an anime using the search bar.</h3>
+                        <h3>Step 2. Click '+ Completed List', and you're done!</h3>
                     </div>
                 );
             }

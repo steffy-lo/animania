@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button";
 import Trending from './trending';
 import ForYou from './recommend';
 import Completed from './completed';
+import ToWatch from './watch';
 import { getUser, addUser } from '../Actions/dashboard';
 
 class Home extends React.Component {
@@ -13,7 +14,8 @@ class Home extends React.Component {
         super(props);
         this.state = {
             currentPage: "trending",
-            username: this.props.state.username
+            username: this.props.state.username,
+            loaded: false
         };
 
         this.getUserData = this.getUserData.bind(this);
@@ -21,13 +23,15 @@ class Home extends React.Component {
 
     getUserData() {
         getUser(this.props.state.username).then(res => {
-            this.setState({animes: res.animes});
+            this.setState({userData: res},
+                () => this.setState({loaded: true}));
             console.log(res)
         })
             .catch(err => {
                 if (err.stat === 404) {
                     addUser(this.props.state.username).then(res => {
-                        this.setState({animes: res.animes});
+                        this.setState({userData: res},
+                            () => this.setState({loaded: true}));
                         console.log(res)
                     })
                         .catch(err => {
@@ -44,12 +48,19 @@ class Home extends React.Component {
 
 
     displaySelectedPage() {
-        if (this.state.currentPage === "trending") {
-            return <Trending/>
-        } else if (this.state.currentPage === "forYou") {
-            return <ForYou username={this.props.state.username} animes={this.state.animes}/>
-        } else if (this.state.currentPage === "completed") {
-            return <Completed animes={this.state.animes}/>
+        console.log(this.state.loaded)
+        if (this.state.loaded) {
+            if (this.state.currentPage === "trending") {
+                return <Trending/>
+            } else if (this.state.currentPage === "forYou") {
+                return <ForYou username={this.props.state.username} animes={this.state.userData.animes}/>
+            } else if (this.state.currentPage === "completed") {
+                return <Completed animes={this.state.userData.animes}/>
+            } else if (this.state.currentPage === "toWatch") {
+                return <ToWatch watchlist={this.state.userData.toWatch}/>
+            }
+        } else {
+            return <Trending/>;
         }
     }
 
@@ -75,6 +86,7 @@ class Home extends React.Component {
                     <Button className="btn-top" variant="danger" onClick={() => this.setState({currentPage: "trending"})}>Trending</Button>
                     <Button className="btn-top" variant="danger" onClick={() => this.setState({currentPage: "forYou"})}>For You</Button>
                     <Button className="btn-top" variant="danger" onClick={() => this.setState({currentPage: "completed"})}>Completed</Button>
+                    <Button className="btn-top" variant="danger" onClick={() => this.setState({currentPage: "toWatch"})}>To Watch</Button>
                 </div>
                 {this.displaySelectedPage()}
             </div>

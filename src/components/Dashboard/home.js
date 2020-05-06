@@ -6,6 +6,7 @@ import Trending from './trending';
 import ForYou from './recommend';
 import Completed from './completed';
 import ToWatch from './watch';
+import AnimeInfo from './anime';
 import {getUser, addUser, makeRequest} from '../Actions/dashboard';
 import {Card} from "react-bootstrap";
 import {uid} from "react-uid";
@@ -28,7 +29,7 @@ class Home extends React.Component {
     }
 
     getAnimes() {
-        makeRequest('GET', "https://api.jikan.moe/v3/search/anime?q=" + this.state.query + "&limit=20")
+        makeRequest('GET', "https://api.jikan.moe/v3/search/anime?q=" + this.state.query + "&limit=15")
             .then(info => {
                 this.setState({searchResults: JSON.parse(info).results},
                     () => console.log(this.state.searchResults)
@@ -43,9 +44,7 @@ class Home extends React.Component {
         this.setState({
             query: this.search.value
         }, () => {
-            if (this.state.query) {
-                this.getAnimes()
-            }
+            this.getAnimes()
         })
     }
 
@@ -85,6 +84,8 @@ class Home extends React.Component {
                 return <Completed animes={this.state.userData.animes}/>
             } else if (this.state.currentPage === "toWatch") {
                 return <ToWatch watchlist={this.state.userData.toWatch}/>
+            } else if (this.state.currentPage === "animeInfo") {
+                return <AnimeInfo anime={this.state.title}/>
             }
         } else {
             return <Trending/>;
@@ -104,11 +105,21 @@ class Home extends React.Component {
                     <div className="suggestion scroll">
                         {this.state.searchResults.map(title => {
                             return(
-                                <div className="image-text-sbs">
-                                    <Card style={{ width: '5rem', display: 'inline-block'}} key={uid(title)}>
+                                <div key={uid(title)} className="image-text-sbs" onClick={
+                                    () => {
+                                        this.setState({currentPage: "animeInfo"});
+                                        this.search.value = "";
+                                        this.setState({searchResults: []});
+                                        this.setState({title: title})}
+                                }>
+                                    <Card style={{ width: '8rem', display: 'inline-block'}} key={uid(title)}>
                                         <Card.Img variant="top" src={title.image_url}/>
                                     </Card>
-                                    <label>{title.title}</label>
+                                    <div className="text">
+                                        <h6>{title.title}</h6>
+                                        <h6>Score: {title.score}</h6>
+                                        <p>{title.synopsis}</p>
+                                    </div>
                                 </div>
                             )
                         })}

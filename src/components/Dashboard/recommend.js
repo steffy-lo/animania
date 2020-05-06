@@ -54,7 +54,7 @@ class Recommend extends React.Component {
         if (this.state.loaded) {
             const animeTitles = this.state.recommendations.map(title => {
                 return(
-                    <Card style={{ width: '17rem' }} key={uid(title)}>
+                    <Card style={{ width: '17rem', textAlign: 'center' }} key={uid(title)}>
                         <Card.Img variant="top" src={title.image_url}/>
                         <Card.Title className="titleName">{title.title}</Card.Title>
                         <Button className="btn-card" variant="danger">+ Watch List</Button>

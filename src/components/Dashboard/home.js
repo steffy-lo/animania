@@ -6,7 +6,6 @@ import Trending from './trending';
 import ForYou from './recommend';
 import Completed from './completed';
 import { getUser, addUser } from '../Actions/dashboard';
-import Refinement from "./refinement";
 
 class Home extends React.Component {
 
@@ -45,7 +44,6 @@ class Home extends React.Component {
 
 
     displaySelectedPage() {
-        console.log(this.state.loaded)
         if (this.state.currentPage === "trending") {
             return <Trending/>
         } else if (this.state.currentPage === "forYou") {

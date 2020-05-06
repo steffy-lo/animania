@@ -48,7 +48,6 @@ class Home extends React.Component {
 
 
     displaySelectedPage() {
-        console.log(this.state.loaded)
         if (this.state.loaded) {
             if (this.state.currentPage === "trending") {
                 return <Trending/>

@@ -69,9 +69,12 @@ def get_model_recommendations():
     else:
         abort(400)
 
+    cell = user_data.findall(username)[0]
+    settings = eval(user_data.cell(cell.row, 4).value)
+
     if type == "user":
-        k = 10
-        n = 10
+        k = settings["k"]
+        n = settings["n"]
         if username in user_matrix:
             similarity, username_dict = user_matrix[username]
         else:
@@ -107,7 +110,7 @@ def get_model_recommendations():
         return jsonify({'result': list(set(top_recs))[:k * n]})
 
     else:
-        k = 10
+        q = settings["q"]
         if anime_id in item_matrix:
             similarity, anime_id_dict = item_matrix[anime_id]
         else:
@@ -122,7 +125,7 @@ def get_model_recommendations():
             arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
             sim_inds = arr_sim.argsort()
             sorted_arr = arr_recs[sim_inds]
-            top_k = sorted_arr[1:k]  # k=10, the top anime is always the anime itself
+            top_k = sorted_arr[1:q]  # k=10, the top anime is always the anime itself
             recommendations["item"][anime_id] = list(set(top_k.tolist()))
 
             return jsonify({'result': list(set(top_k.tolist()))})
@@ -142,7 +145,7 @@ def get_completed():
 # ====================================== POST METHODS =================================================
 @app.route('/add_user/<username>', methods=["POST"])
 def add_user(username):
-    row = [username, "{}", "{}", "{k: 5, n: 5, q: 10}"]
+    row = [username, "{}", "{}", "{'k': 5, 'n': 5, 'q': 10}"]
     user_data.insert_row(row, 2)
 
     return jsonify({'result': {'username': username, 'animes': {}}})
@@ -180,6 +183,47 @@ def add_completed():
     return jsonify(req)
 
 
+@app.route('/add_to_watch', methods=["PATCH"])
+def add_to_watch():
+    req = request.get_json()
+    for key in ["username", "anime_id", "title", "image_url"]:
+        if key not in req:
+            abort(400)
+
+    cell = user_data.findall(req["username"])[0]
+    watch_list = eval(user_data.cell(cell.row, 3).value)
+    watch_list[req["anime_id"]] = {"title": req["title"], "image_url": req["image_url"]}
+    user_data.update_cell(cell.row, 3, str(watch_list))
+
+    return jsonify(req)
+
+
+@app.route('/settings', methods=["PATCH"])
+def settings():
+    req = request.get_json()
+    print(req)
+    
+    if "username" not in req:
+        abort(400)
+
+    if "k" not in req and "n" not in req and "q" not in req:
+        abort(400)
+
+    # update settings in database accordingly
+    cell = user_data.findall(req["username"])[0]
+    settings = eval(user_data.cell(cell.row, 4).value)
+    if "k" in req:
+        settings["k"] = req["k"]
+    if "n" in req:
+        settings["n"] = req["n"]
+    if "q" in req:
+        settings["q"] = req["q"]
+
+    user_data.update_cell(cell.row, 4, str(settings))
+
+    return jsonify(req)
+
+
 def build_item_matrix(anime_id):
     user_stats = pd.DataFrame(review_sheet.get_all_records()).sample(n=10000)
     cells = review_sheet.findall(anime_id)[:20]
@@ -212,6 +256,7 @@ def build_user_matrix(username):
         user_stats = user_stats.append({'profile': username,
                                         'anime_uid': int(anime_id),
                                         'score': int(score)}, ignore_index=True)
+
     user_stats.drop_duplicates(inplace=True)
     username_dict = dict(zip([val for val in user_stats['profile'].unique()],
                              [i for i, val in enumerate(user_stats['profile'].unique())]))

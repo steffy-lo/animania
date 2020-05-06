@@ -36,7 +36,7 @@ class App extends React.Component {
           })
           if (this.state.isSignedIn){
             this.setState({
-                username: user.displayName.split(" ").join(""),
+                username: user.email,
                 profilePic: user.photoURL
             })
         }

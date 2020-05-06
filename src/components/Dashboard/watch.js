@@ -13,7 +13,6 @@ class Watch extends React.Component {
     }
 
     getWatchList() {
-        console.log(this.props)
         for (let value of Object.values(this.props.watchlist)) {
             this.setState({toWatch: [...this.state.toWatch, value]})
         }
@@ -21,7 +20,7 @@ class Watch extends React.Component {
     }
 
     componentDidMount() {
-        setTimeout(this.getWatchList, 100)
+        setTimeout(this.getWatchList, 0)
     }
 
     render() {
@@ -31,7 +30,7 @@ class Watch extends React.Component {
                     <Card style={{ width: '17rem' }} key={uid(title)}>
                         <Card.Img variant="top" src={title.image_url}/>
                         <Card.Title className="titleName">{title.title}</Card.Title>
-                        <Button className="btn-card" variant="danger">Edit Review</Button>
+                        <Button className="btn-card" variant="danger">+ Completed List</Button>
                     </Card>
                 )
             });
@@ -45,7 +44,7 @@ class Watch extends React.Component {
                 )
             } else {
                 return (
-                    <div className="loading-msg">av
+                    <div className="loading-msg">
                         <h1>Getting Started...</h1>
                         <h3>Start by adding an anime to your watch list as follows:</h3>
                         <h3>Step 1. Search up an anime using the search bar.</h3>

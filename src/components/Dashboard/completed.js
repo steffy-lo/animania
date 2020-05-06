@@ -17,20 +17,18 @@ class Completed extends React.Component {
     getAnimes() {
         for (let key of Object.keys(this.props.animes)) {
             makeRequest('GET', "https://api.jikan.moe/v3/anime/" + key)
-            .then(info => {
-                this.setState({completed: [...this.state.completed, JSON.parse(info)]})
-            })
-            .catch(err => {
-                console.log(err)
-            })
-            .finally(() => {
-                this.setState({loaded: true})
-            })
+                .then(info => {
+                    this.setState({completed: [...this.state.completed, JSON.parse(info)]})
+                })
+                .catch(err => {
+                    console.log(err)
+                })
         }
+        this.setState({loaded: true})
     }
 
     componentDidMount() {
-        setTimeout(this.getAnimes, 1000)
+        setTimeout(this.getAnimes, 0);
     }
 
     render() {
@@ -54,7 +52,7 @@ class Completed extends React.Component {
                 )
             } else {
                 return (
-                    <div className="loading-msg">av
+                    <div className="loading-msg">
                         <h1>Getting Started...</h1>
                         <h3>Start by adding an anime to your completed list as follows:</h3>
                         <h3>Step 1. Search up an anime using the search bar.</h3>

@@ -27,19 +27,23 @@ class Recommend extends React.Component {
     }
 
     loadRecommendations() {
-        getRecommendations(this.props.username, "user")
-            .then(recs => {
-                console.log(recs);
-                for (let i = 0; i < recs.length; i++) {
-                    this.getAnimeInfo(recs[i]);
-                }
-            })
-            .catch(err => {
-                console.log(err)
-            })
-            .finally(() => {
-                this.setState({loaded: true})
-            })
+        if (Object.keys(this.props.animes).length > 0) {
+            getRecommendations(this.props.username, "user")
+                .then(recs => {
+                    console.log(recs);
+                    for (let i = 0; i < recs.length; i++) {
+                        this.getAnimeInfo(recs[i]);
+                    }
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+                .finally(() => {
+                    this.setState({loaded: true})
+                })
+        } else {
+            this.setState({loaded: true})
+        }
     }
 
     componentDidMount() {

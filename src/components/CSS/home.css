@@ -4,6 +4,20 @@
     max-height: 80vh;
 }
 
+.anime-info {
+    margin: 5%;
+}
+
+.anime-info .card {
+    display: inline-block;
+}
+
+.anime-desc {
+    margin: 3%;
+    max-width: 80%;
+    display: inline-block;
+}
+
 .full-scroll {
     overflow-x: hidden;
     overflow-y: scroll;
@@ -32,13 +46,14 @@
     margin: 1%;
 }
 
-.image-text-sbs:hover {
-    background-color: lightgray;
+.image-text-sbs .text {
+    margin-left: 2%;
+    display: inline-block;
+    max-width: 80%;
 }
 
-.image-text-sbs label {
-    display: inline-block;
-    margin: 5%;
+.image-text-sbs:hover {
+    background-color: lightgray;
 }
 
 .settings{

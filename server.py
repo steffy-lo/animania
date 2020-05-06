@@ -9,6 +9,7 @@ import pandas as pd
 from sklearn.metrics.pairwise import pairwise_distances
 
 from jikanpy import Jikan
+
 jikan = Jikan()
 
 import gspread
@@ -30,14 +31,24 @@ recommendations = {"user": {}, "item": {}}
 app = Flask("animania")
 CORS(app)
 
-#====================================== GET METHODS ==================================================
+
+# ====================================== GET METHODS ==================================================
 @app.route('/get_user/<username>', methods=["GET"])
 def get_user(username):
     cell = user_data.findall(username)
     if len(cell) == 0:
         abort(404)
     anime_list = eval(user_data.cell(cell[0].row, 2).value)
-    return jsonify({'result': {'username': username, 'animes': anime_list}})
+    watch_list = eval(user_data.cell(cell[0].row, 3).value)
+    settings = eval(user_data.cell(cell[0].row, 4).value)
+    return jsonify({'result':
+                        {'username': username,
+                         'animes': anime_list,
+                         'toWatch': watch_list,
+                         'settings': settings
+                         }
+                    })
+
 
 @app.route('/model_recs', methods=["GET"])
 def get_model_recommendations():
@@ -79,11 +90,11 @@ def get_model_recommendations():
             sorted_arr = arr_recs[sim_inds]
             top_k = []
             i = 1
-            while True and len(top_k) < k and i < k*2:
+            while True and len(top_k) < k and i < k * 2:
                 try:
                     user = sorted_arr[i]
                     animelist = sorted(jikan.user(username=user, request='animelist')['anime'], key=by_score,
-                                       reverse=True)[:n*2]
+                                       reverse=True)[:n * 2]
                     top_k.append(user)
                     anime_ids = [anime["mal_id"] for anime in animelist]
                     top_recs.extend(anime_ids)
@@ -91,9 +102,9 @@ def get_model_recommendations():
                     print("An unexpected API error occured.")  # user might have a private animelist
                 i += 1
 
-            recommendations["user"][username] = list(set(top_recs))[:k*n]
+            recommendations["user"][username] = list(set(top_recs))[:k * n]
 
-        return jsonify({'result': list(set(top_recs))[:k*n]})
+        return jsonify({'result': list(set(top_recs))[:k * n]})
 
     else:
         k = 10
@@ -128,16 +139,16 @@ def get_completed():
     return jsonify(anime_list)
 
 
-#====================================== POST METHODS =================================================
+# ====================================== POST METHODS =================================================
 @app.route('/add_user/<username>', methods=["POST"])
 def add_user(username):
-    row = [username, "{}"]
+    row = [username, "{}", "{}", "{k: 5, n: 5, q: 10}"]
     user_data.insert_row(row, 2)
 
     return jsonify({'result': {'username': username, 'animes': {}}})
 
 
-#====================================== DELETE METHODS ================================================
+# ====================================== DELETE METHODS ================================================
 @app.route('/del_completed', methods=["DELETE"])
 def del_completed():
     req = request.get_json()
@@ -152,7 +163,7 @@ def del_completed():
     return jsonify(req)
 
 
-#====================================== PATCH METHODS =================================================
+# ====================================== PATCH METHODS =================================================
 @app.route('/add_completed', methods=["PATCH"])
 def add_completed():
     req = request.get_json()

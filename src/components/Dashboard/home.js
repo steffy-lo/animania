@@ -6,7 +6,9 @@ import Trending from './trending';
 import ForYou from './recommend';
 import Completed from './completed';
 import ToWatch from './watch';
-import { getUser, addUser } from '../Actions/dashboard';
+import {getUser, addUser, makeRequest} from '../Actions/dashboard';
+import {Card} from "react-bootstrap";
+import {uid} from "react-uid";
 
 class Home extends React.Component {
 
@@ -15,10 +17,36 @@ class Home extends React.Component {
         this.state = {
             currentPage: "trending",
             username: this.props.state.username,
-            loaded: false
+            loaded: false,
+            query: "",
+            searchResults: []
         };
 
         this.getUserData = this.getUserData.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.getAnimes = this.getAnimes.bind(this);
+    }
+
+    getAnimes() {
+        makeRequest('GET', "https://api.jikan.moe/v3/search/anime?q=" + this.state.query + "&limit=20")
+            .then(info => {
+                this.setState({searchResults: JSON.parse(info).results},
+                    () => console.log(this.state.searchResults)
+                    )
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
+    handleInputChange() {
+        this.setState({
+            query: this.search.value
+        }, () => {
+            if (this.state.query) {
+                this.getAnimes()
+            }
+        })
     }
 
     getUserData() {
@@ -71,8 +99,20 @@ class Home extends React.Component {
                 </div>
 
                 <div className="search-div">
-                    <input type="text" placeholder="Search" className="search"/>
+                    <input type="text" placeholder="Search" className="search" onChange={this.handleInputChange} ref={input => this.search = input}/>
                     <button className="search-btn" type="submit"><img alt="search" className="search-icon" src ={require('../../images/search.png')}/></button>
+                    <div className="suggestion scroll">
+                        {this.state.searchResults.map(title => {
+                            return(
+                                <div className="image-text-sbs">
+                                    <Card style={{ width: '5rem', display: 'inline-block'}} key={uid(title)}>
+                                        <Card.Img variant="top" src={title.image_url}/>
+                                    </Card>
+                                    <label>{title.title}</label>
+                                </div>
+                            )
+                        })}
+                    </div>
                 </div>
                 <div className="icons">
                     <Link to="/settings">

@@ -30,6 +30,13 @@ class Completed extends React.Component {
         setTimeout(this.getAnimes, 0);
     }
 
+    componentDidUpdate(prevProps) {
+        // Typical usage (don't forget to compare props):
+        if (this.props.animes!== prevProps.animes) {
+            this.getAnimes()
+        }
+    }
+
     render() {
         if (this.state.loaded) {
             const animeTitles = this.state.completed.map(title => {

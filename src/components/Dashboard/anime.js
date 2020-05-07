@@ -39,10 +39,11 @@ class AnimeInfo extends React.Component {
         if (this.state.loaded) {
             return (
                 <div className="anime-info">
-                    <Card style={{width: '15rem', textAlign: 'center'}}>
+                    <Card style={{width: '15rem'}}>
                         <Card.Img variant="top" src={this.state.anime.image_url}/>
                         <Card.Title className="titleName">{this.state.anime.title}</Card.Title>
                         <Button className="btn-card" variant="danger">+ Watch List</Button>
+                        <Button className="btn-card" variant="danger">+ Completed List</Button>
                     </Card>
                     <div className="anime-desc">
                         <h5>Score: {this.state.anime.score}</h5>

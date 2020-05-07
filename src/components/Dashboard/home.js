@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../CSS/home.css';
-import Button from "react-bootstrap/Button";
+import {Modal, Button} from "react-bootstrap";
 import Trending from './trending';
 import ForYou from './recommend';
 import Completed from './completed';
 import ToWatch from './watch';
 import AnimeInfo from './anime';
-import {getUser, addUser, makeRequest} from '../Actions/dashboard';
+import {getUser, addUser, makeRequest, addCompleted, removeFromWatch} from '../Actions/dashboard';
 import {Card} from "react-bootstrap";
 import {uid} from "react-uid";
 
@@ -17,6 +17,7 @@ class Home extends React.Component {
         super(props);
         this.state = {
             currentPage: "trending",
+            reviewPrompt: {show: false},
             username: this.props.state.username,
             loaded: false,
             query: "",
@@ -26,6 +27,10 @@ class Home extends React.Component {
         this.getUserData = this.getUserData.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.getAnimes = this.getAnimes.bind(this);
+        this.showReviewPrompt = this.showReviewPrompt.bind(this);
+        this.updateCompletedList = this.updateCompletedList.bind(this);
+        this.displaySelectedPage = this.displaySelectedPage.bind(this);
+        this.displayReviewPrompt = this.displayReviewPrompt.bind(this);
     }
 
     getAnimes() {
@@ -70,7 +75,7 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        setTimeout(this.getUserData, 0);
+        setInterval(this.getUserData, 5000);
     }
 
 
@@ -81,24 +86,70 @@ class Home extends React.Component {
             } else if (this.state.currentPage === "forYou") {
                 return <ForYou username={this.props.state.username} animes={this.state.userData.animes}/>
             } else if (this.state.currentPage === "completed") {
-                return <Completed animes={this.state.userData.animes}/>
+                return <Completed username={this.props.state.username} animes={this.state.userData.animes}/>
             } else if (this.state.currentPage === "toWatch") {
-                return <ToWatch watchlist={this.state.userData.toWatch}/>
+                return <ToWatch username={this.props.state.username} reviewPrompt={this.showReviewPrompt} watchlist={this.state.userData.toWatch}/>
             } else if (this.state.currentPage === "animeInfo") {
-                return <AnimeInfo anime={this.state.title}/>
+                return <AnimeInfo username={this.props.state.username} anime={this.state.title}/>
             }
         } else {
             return <Trending/>;
         }
     }
 
+    showReviewPrompt(anime) {
+        this.setState({reviewPrompt: {show: true, anime: anime}})
+    }
+
+    updateCompletedList(anime_id) {
+        if (this.score.value !== "" ) {
+            const score = parseInt(this.score.value);
+            if (score > 0 && score < 11) {
+                this.setState({reviewPrompt: {show: false}});
+                addCompleted(this.props.state.username, anime_id, score)
+                    .then(res =>{
+                        console.log(res)
+                    })
+                removeFromWatch(this.props.state.username, anime_id)
+                    .then(res => {
+                        console.log(res)
+                    })
+            }
+        }
+    }
+
+    displayReviewPrompt() {
+        if (this.state.reviewPrompt.show) {
+            return (
+                <div className="review-prompt">
+                    <Modal.Dialog>
+                        <Modal.Header>
+                            <Modal.Title>{this.state.reviewPrompt.anime.title} Review</Modal.Title>
+                        </Modal.Header>
+
+                        <Modal.Body>
+                            <p>Please enter a number between 1 and 10 for your score of the anime.</p>
+                            <p>You need to review the anime to add it to your completed list.</p>
+                            <input type="number" id="score" min="1" max="10" placeholder="score" ref={input => this.score = input}/>
+                        </Modal.Body>
+
+                        <Modal.Footer>
+                            <Button variant="danger" onClick={() => this.updateCompletedList(this.state.reviewPrompt.anime.anime_id)}>Done</Button>
+                        </Modal.Footer>
+                    </Modal.Dialog>
+                </div>
+            )
+        }
+        return null;
+    }
+
     render() {
         return(
+            <div>
             <div className="nav-bar">
                 <div className="logoImg">
                 <img className="logo-icon" alt="logo" src={require('../../images/logoTitle.png')}/>
                 </div>
-
                 <div className="search-div">
                     <input type="text" placeholder="Search" className="search" onChange={this.handleInputChange} ref={input => this.search = input}/>
                     <button className="search-btn" type="submit"><img alt="search" className="search-icon" src ={require('../../images/search.png')}/></button>
@@ -139,6 +190,8 @@ class Home extends React.Component {
                     <Button className="btn-top" variant="danger" onClick={() => this.setState({currentPage: "toWatch"})}>To Watch</Button>
                 </div>
                 {this.displaySelectedPage()}
+            </div>
+            {this.displayReviewPrompt()}
             </div>
         )
     }

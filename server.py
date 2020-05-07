@@ -38,7 +38,7 @@ def get_user(username):
         abort(404)
     anime_list = eval(user_data.cell(cell[0].row, 2).value)
     watch_list = eval(user_data.cell(cell[0].row, 3).value)
-    settings = eval(user_data.cell(cell[0].row, 4).value)
+    settings = user_data.cell(cell[0].row, 4).value
     return jsonify({'result':
                         {'username': username,
                          'animes': anime_list,
@@ -153,13 +153,32 @@ def add_user(username):
 @app.route('/del_completed', methods=["DELETE"])
 def del_completed():
     req = request.get_json()
-    if "anime_id" not in req:
-        abort(400)
-    cells = review_sheet.findall(req["anime_id"])
-    for cell in cells:
-        username = review_sheet.row_values(cell.row)[0]
-        if req.username == username:
-            review_sheet.delete_row(cell.row)
+    for key in ["username", "anime_id"]:
+        if key not in req:
+            abort(400)
+    cell = user_data.findall(req["username"])[0]
+    anime_list = eval(user_data.cell(cell.row, 2).value)
+    try:
+        del anime_list[req["anime_id"]]
+        user_data.update_cell(cell.row, 2, str(anime_list))
+    except KeyError:
+        print("Key " + req["anime_id"] + " not found")
+
+    return jsonify(req)
+
+@app.route('/del_to_watch', methods=["DELETE"])
+def del_to_watch():
+    req = request.get_json()
+    for key in ["username", "anime_id"]:
+        if key not in req:
+            abort(400)
+    cell = user_data.findall(req["username"])[0]
+    anime_list = eval(user_data.cell(cell.row, 3).value)
+    try:
+        del anime_list[req["anime_id"]]
+        user_data.update_cell(cell.row, 3, str(anime_list))
+    except KeyError:
+        print("Key " + req["anime_id"] + " not found")
 
     return jsonify(req)
 

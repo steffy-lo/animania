@@ -1,6 +1,7 @@
 import React from 'react';
 import {uid} from "react-uid";
 import {Button, Card} from "react-bootstrap";
+import {removeFromWatch} from '../Actions/dashboard';
 
 class Watch extends React.Component {
     constructor(props) {
@@ -9,11 +10,12 @@ class Watch extends React.Component {
             loaded: false,
             toWatch: []
         };
-        this.getWatchList = this.getWatchList.bind(this)
+        this.getWatchList = this.getWatchList.bind(this);
     }
 
     getWatchList() {
-        for (let value of Object.values(this.props.watchlist)) {
+        for (let [key, value] of Object.entries(this.props.watchlist)) {
+            value.anime_id = parseInt(key);
             this.setState({toWatch: [...this.state.toWatch, value]})
         }
         this.setState({loaded: true})
@@ -30,7 +32,7 @@ class Watch extends React.Component {
                     <Card style={{ width: '17rem', textAlign: 'center' }} key={uid(title)}>
                         <Card.Img variant="top" src={title.image_url}/>
                         <Card.Title className="titleName">{title.title}</Card.Title>
-                        <Button className="btn-card" variant="danger">+ Completed List</Button>
+                        <Button className="btn-card" variant="danger" onClick={() => this.props.reviewPrompt(title)}>+ Completed List</Button>
                     </Card>
                 )
             });

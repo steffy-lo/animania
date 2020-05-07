@@ -104,3 +104,43 @@ export const addUser = (username) => {
             });
     });
 };
+
+export const addCompleted = (username, anime_id, score) => {
+    return new Promise((resolve, reject) => {
+        axios
+            .patch(PREFIX + "/add_completed", JSON.stringify({ username, anime_id, score }),
+                { headers: { "Content-Type": "application/json" } })
+            .then(res => {
+                if (!res || !res.data)
+                    reject({ stat: 500, msg: "Something went wrong" });
+                resolve(res.data);
+            })
+            .catch(err => {
+                reject({
+                    stat: err.response.status,
+                    msg:
+                        "There was an error processing your request. Please, try again later."
+                });
+            });
+    });
+};
+
+export const removeFromWatch = (username, anime_id) => {
+    return new Promise((resolve, reject) => {
+        axios
+            .delete(PREFIX + "/del_to_watch", {data: { username, anime_id }},
+                { headers: { "Content-Type": "application/json" } })
+            .then(res => {
+                if (!res || !res.data)
+                    reject({ stat: 500, msg: "Something went wrong" });
+                resolve(res.data);
+            })
+            .catch(err => {
+                reject({
+                    stat: err.response.status,
+                    msg:
+                        "There was an error processing your request. Please, try again later."
+                });
+            });
+    });
+};

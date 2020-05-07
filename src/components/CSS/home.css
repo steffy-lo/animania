@@ -18,6 +18,14 @@
     display: inline-block;
 }
 
+.review-prompt {
+    position: absolute;
+    top: 25%;
+    left: 10%;
+    right: 10%;
+    z-index: 100;
+}
+
 .full-scroll {
     overflow-x: hidden;
     overflow-y: scroll;
@@ -35,7 +43,7 @@
     position: absolute;
     opacity: 100%;
     background-color: white;
-    z-index: 99;
+    z-index: 5;
     width: 56%;
     border: 0.5px solid lightgray;
     border-top: 0;

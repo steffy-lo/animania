@@ -14,20 +14,22 @@ class Completed extends React.Component {
     }
 
     getAnimes() {
-        for (let key of Object.keys(this.props.animes)) {
-            makeRequest('GET', "https://api.jikan.moe/v3/anime/" + key)
-                .then(info => {
-                    this.setState({completed: [...this.state.completed, JSON.parse(info)]})
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+        if (this.props.animes != null) {
+            for (let key of Object.keys(this.props.animes)) {
+                makeRequest('GET', "https://api.jikan.moe/v3/anime/" + key)
+                    .then(info => {
+                        this.setState({completed: [...this.state.completed, JSON.parse(info)]})
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+            }
         }
         this.setState({loaded: true})
     }
 
     componentDidMount() {
-        setTimeout(this.getAnimes, 0);
+        setTimeout(this.getAnimes, 1000);
     }
 
     componentDidUpdate(prevProps) {

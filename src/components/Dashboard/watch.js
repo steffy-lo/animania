@@ -1,7 +1,6 @@
 import React from 'react';
 import {uid} from "react-uid";
 import {Button, Card} from "react-bootstrap";
-import {removeFromWatch} from '../Actions/dashboard';
 
 class Watch extends React.Component {
     constructor(props) {
@@ -14,15 +13,17 @@ class Watch extends React.Component {
     }
 
     getWatchList() {
-        for (let [key, value] of Object.entries(this.props.watchlist)) {
-            value.anime_id = parseInt(key);
-            this.setState({toWatch: [...this.state.toWatch, value]})
+        if (this.props.watchlist != null) {
+            for (let [key, value] of Object.entries(this.props.watchlist)) {
+                value.anime_id = parseInt(key);
+                this.setState({toWatch: [...this.state.toWatch, value]})
+            }
         }
         this.setState({loaded: true})
     }
 
     componentDidMount() {
-        setTimeout(this.getWatchList, 0)
+        setTimeout(this.getWatchList, 1000)
     }
 
     render() {

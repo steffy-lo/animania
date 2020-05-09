@@ -5,8 +5,15 @@ import numpy as np
 import pandas as pd
 from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
+from flask.json import JSONEncoder
 from jikanpy import Jikan
 from sklearn.metrics.pairwise import pairwise_distances
+from pymongo import MongoClient
+from bson import json_util
+
+client = MongoClient()
+db = client.animania
+user_data = db.users
 
 jikan = Jikan()
 
@@ -19,26 +26,32 @@ scope = ["https://spreadsheets.google.com/feeds",
          "https://www.googleapis.com/auth/drive"]
 
 creds = ServiceAccountCredentials.from_json_keyfile_name("./creds.json", scope)
-client = gspread.authorize(creds)
-review_sheet = client.open("reviews").sheet1
-user_data = client.open("animania").sheet1
+gs = gspread.authorize(creds)
+review_sheet = gs.open("reviews").sheet1
 user_matrix = {}
 item_matrix = {}
 recommendations = {"user": {}, "item": {}}
 
+
+# define a custom encoder point to the json_util provided by pymongo (or its dependency bson)
+class CustomJSONEncoder(JSONEncoder):
+    def default(self, obj): return json_util.default(obj)
+
+
 app = Flask("animania")
+app.json_encoder = CustomJSONEncoder
 CORS(app)
 
 
 # ====================================== GET METHODS ==================================================
 @app.route('/get_user/<username>', methods=["GET"])
 def get_user(username):
-    cell = user_data.findall(username)
-    if len(cell) == 0:
+    user = user_data.find_one({'username': username})
+    if not user:
         abort(404)
-    anime_list = eval(user_data.cell(cell[0].row, 2).value)
-    watch_list = eval(user_data.cell(cell[0].row, 3).value)
-    settings = user_data.cell(cell[0].row, 4).value
+    anime_list = user["anime_list"]
+    watch_list = user["to_watch"]
+    settings = user["settings"]
     return jsonify({'result':
                         {'username': username,
                          'animes': anime_list,
@@ -67,8 +80,8 @@ def get_model_recommendations():
     else:
         abort(400)
 
-    cell = user_data.findall(username)[0]
-    settings = eval(user_data.cell(cell.row, 4).value)
+    user = user_data.find_one({'username': username})
+    settings = user["settings"]
 
     if type == "user":
         k = settings["k"]
@@ -129,24 +142,17 @@ def get_model_recommendations():
             return jsonify({'result': list(set(top_k.tolist()))})
 
 
-@app.route('/completed', methods=["GET"])
-def get_completed():
-    req = request.get_json()
-    if "username" not in req:
-        abort(400)
-    cell = user_data.findall(req["username"])[0]
-    anime_list = user_data.cell(cell.row, 2).value
-
-    return jsonify(anime_list)
-
-
 # ====================================== POST METHODS =================================================
 @app.route('/add_user/<username>', methods=["POST"])
 def add_user(username):
-    row = [username, "{}", "{}", "{'k': 5, 'n': 5, 'q': 10}"]
-    user_data.insert_row(row, 2)
-
-    return jsonify({'result': {'username': username, 'animes': {}}})
+    post_data = {
+        'username': username,
+        'anime_list': {},
+        'to_watch': {},
+        'settings': {'k': 5, 'n': 5, 'q': 10}
+    }
+    user_data.insert_one(post_data)
+    return jsonify({'result': post_data})
 
 
 # ====================================== DELETE METHODS ================================================
@@ -156,11 +162,13 @@ def del_completed():
     for key in ["username", "anime_id"]:
         if key not in req:
             abort(400)
-    cell = user_data.findall(req["username"])[0]
-    anime_list = eval(user_data.cell(cell.row, 2).value)
+    user = user_data.find_one({'username': req["username"]})
+    anime_list = user["anime_list"]
     try:
         del anime_list[req["anime_id"]]
-        user_data.update_cell(cell.row, 2, str(anime_list))
+        user_data.find_one_and_update({"username": req["username"]},
+                                      {"$set": {"anime_list": anime_list}
+                                       })
     except KeyError:
         print("Key " + req["anime_id"] + " not found")
 
@@ -172,11 +180,13 @@ def del_to_watch():
     for key in ["username", "anime_id"]:
         if key not in req:
             abort(400)
-    cell = user_data.findall(req["username"])[0]
-    anime_list = eval(user_data.cell(cell.row, 3).value)
+    user = user_data.find_one({'username': req["username"]})
+    watch_list = user["to_watch"]
     try:
-        del anime_list[req["anime_id"]]
-        user_data.update_cell(cell.row, 3, str(anime_list))
+        del watch_list[req["anime_id"]]
+        user_data.find_one_and_update({"username": req["username"]},
+                                      {"$set": {"to_watch": watch_list}
+                                       })
     except KeyError:
         print("Key " + req["anime_id"] + " not found")
 
@@ -191,11 +201,11 @@ def add_completed():
         if key not in req:
             abort(400)
 
-    # modify animania google sheets database
-    cell = user_data.findall(req["username"])[0]
-    anime_list = eval(user_data.cell(cell.row, 2).value)
-    anime_list[req["anime_id"]] = req["score"]
-    user_data.update_cell(cell.row, 2, str(anime_list))
+    user = user_data.find_one({'username': req["username"]})
+    anime_list = user["anime_list"]
+    anime_list[str(req["anime_id"])] = req["score"]
+    user_data.find_one_and_update({"username": req["username"]},
+                                  {"$set": {"anime_list": anime_list}})
 
     return jsonify(req)
 
@@ -207,10 +217,12 @@ def add_to_watch():
         if key not in req:
             abort(400)
 
-    cell = user_data.findall(req["username"])[0]
-    watch_list = eval(user_data.cell(cell.row, 3).value)
-    watch_list[req["anime_id"]] = {"title": req["title"], "image_url": req["image_url"]}
-    user_data.update_cell(cell.row, 3, str(watch_list))
+    user = user_data.find_one({'username': req["username"]})
+    watch_list = user["to_watch"]
+    watch_list[str(req["anime_id"])] = {"title": req["title"], "image_url": req["image_url"]}
+    user_data.find_one_and_update({"username": req["username"]},
+                                  {"$set": {"to_watch": watch_list}
+                                   })
 
     return jsonify(req)
 
@@ -226,8 +238,8 @@ def settings():
         abort(400)
 
     # update settings in database accordingly
-    cell = user_data.findall(req["username"])[0]
-    settings = eval(user_data.cell(cell.row, 4).value)
+    user = user_data.find_one({'username': req["username"]})
+    settings = user["settings"]
     if "k" in req:
         settings["k"] = req["k"]
     if "n" in req:
@@ -235,7 +247,9 @@ def settings():
     if "q" in req:
         settings["q"] = req["q"]
 
-    user_data.update_cell(cell.row, 4, str(settings))
+    user_data.find_one_and_update({"username": req["username"]},
+                                  {"$set": {"settings": settings}
+                                   })
 
     return jsonify(req)
 
@@ -265,8 +279,8 @@ def build_item_matrix(anime_id):
 
 def build_user_matrix(username):
     user_stats = pd.DataFrame(review_sheet.get_all_records()).sample(n=10000)
-    cell = user_data.findall(username)[0]
-    anime_list = eval(user_data.cell(cell.row, 2).value)
+    user = user_data.find_one({'username': username})
+    anime_list = user["anime_list"]
 
     for anime_id, score in anime_list.items():
         user_stats = user_stats.append({'profile': username,

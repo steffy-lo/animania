@@ -198,7 +198,6 @@ def del_to_watch():
 @app.route('/add_completed', methods=["PATCH"])
 def add_completed():
     req = request.get_json()
-    print(req)
     for key in ["username", "anime_id", "score"]:
         if key not in req:
             abort(400)

@@ -197,6 +197,7 @@ class Home extends React.Component {
                         <Modal.Body>
                             <p>Please enter a number between 1 and 10 for your score of the anime.</p>
                             <p>You need to review the anime to add it to your completed list.</p>
+                            <p>If you'd like, you can modify your score later.</p>
                             <input type="number" id="score" min="1" max="10" placeholder="score" ref={input => this.score = input}/>
                         </Modal.Body>
 

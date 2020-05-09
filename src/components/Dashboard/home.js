@@ -75,7 +75,7 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        setInterval(this.getUserData, 5000);
+        setTimeout(this.getUserData(),0);
     }
 
 
@@ -123,7 +123,7 @@ class Home extends React.Component {
             return (
                 <div className="review-prompt">
                     <Modal.Dialog>
-                        <Modal.Header>
+                        <Modal.Header closebutton>
                             <Modal.Title>{this.state.reviewPrompt.anime.title} Review</Modal.Title>
                         </Modal.Header>
 

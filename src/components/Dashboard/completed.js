@@ -1,7 +1,7 @@
 import React from 'react';
 import {uid} from "react-uid";
 import {Button, Card} from "react-bootstrap";
-import {makeRequest} from "../Actions/dashboard";
+import {makeRequest, removeFromCompleted} from "../Actions/dashboard";
 
 class Completed extends React.Component {
     constructor(props) {
@@ -9,8 +9,9 @@ class Completed extends React.Component {
         this.state = {
             loaded: false,
             completed: []
-        }
+        };
         this.getAnimes = this.getAnimes.bind(this)
+        this.removeFromList = this.removeFromList.bind(this);
     }
 
     getAnimes() {
@@ -41,6 +42,18 @@ class Completed extends React.Component {
         }
     }
 
+    removeFromList(anime_id) {
+        removeFromCompleted(this.props.username, anime_id)
+            .then(res => {
+                console.log(res);
+                this.setState({completed: []},
+                    () => this.props.updateData());
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
     render() {
         if (this.state.loaded) {
             const animeTitles = this.state.completed.map(title => {
@@ -48,8 +61,9 @@ class Completed extends React.Component {
                     <Card style={{ width: '17rem', textAlign: 'center' }} key={uid(title)}>
                         <Card.Img variant="top" src={title.image_url}/>
                         <Card.Title className="titleName">{title.title}</Card.Title>
-                        <Card.Text><h6>Score: {title.your_score}</h6></Card.Text>
+                        <Card.Text>Score: {title.your_score}</Card.Text>
                         <Button className="btn-card" variant="danger">Edit Review</Button>
+                        <Button className="btn-card" variant="danger" onClick={() => this.removeFromList(title.mal_id)}>Remove</Button>
                     </Card>
                 )
             });

@@ -152,7 +152,7 @@ class Home extends React.Component {
             } else if (this.state.currentPage === "forYou") {
                 return <ForYou username={this.props.state.username} addToWatch={this.addToWatch} animes={this.state.userData.animes}/>
             } else if (this.state.currentPage === "completed") {
-                return <Completed username={this.props.state.username} animes={this.state.userData.animes}/>
+                return <Completed username={this.props.state.username} animes={this.state.userData.animes} updateData={this.getUserData}/>
             } else if (this.state.currentPage === "toWatch") {
                 return <ToWatch username={this.props.state.username} reviewPrompt={this.showReviewPrompt} watchlist={this.state.userData.toWatch}/>
             } else if (this.state.currentPage === "animeInfo") {
@@ -202,7 +202,7 @@ class Home extends React.Component {
 
                         <Modal.Footer>
                             <Button variant="secondary" onClick={() => this.setState({reviewPrompt: {show: false}})}>Cancel</Button>
-                            <Button variant="danger" onClick={() => this.updateCompletedList(this.state.reviewPrompt.anime.anime_id)}>Done</Button>
+                            <Button variant="danger" onClick={() => this.updateCompletedList(this.state.reviewPrompt.anime.mal_id)}>Done</Button>
                         </Modal.Footer>
                     </Modal.Dialog>
                 </div>

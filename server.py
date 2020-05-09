@@ -159,6 +159,7 @@ def add_user(username):
 @app.route('/del_completed', methods=["DELETE"])
 def del_completed():
     req = request.get_json()
+    print(req)
     for key in ["username", "anime_id"]:
         if key not in req:
             abort(400)
@@ -197,6 +198,7 @@ def del_to_watch():
 @app.route('/add_completed', methods=["PATCH"])
 def add_completed():
     req = request.get_json()
+    print(req)
     for key in ["username", "anime_id", "score"]:
         if key not in req:
             abort(400)

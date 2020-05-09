@@ -15,7 +15,7 @@ class Watch extends React.Component {
     getWatchList() {
         if (this.props.watchlist != null) {
             for (let [key, value] of Object.entries(this.props.watchlist)) {
-                value.anime_id = parseInt(key);
+                value.mal_id = parseInt(key);
                 this.setState({toWatch: [...this.state.toWatch, value]})
             }
         }

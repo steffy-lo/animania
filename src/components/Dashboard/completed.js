@@ -15,10 +15,12 @@ class Completed extends React.Component {
 
     getAnimes() {
         if (this.props.animes != null) {
-            for (let key of Object.keys(this.props.animes)) {
+            for (let [key, value] of Object.entries(this.props.animes)) {
                 makeRequest('GET', "https://api.jikan.moe/v3/anime/" + key)
                     .then(info => {
-                        this.setState({completed: [...this.state.completed, JSON.parse(info)]})
+                        const res = JSON.parse(info);
+                        res.your_score = value;
+                        this.setState({completed: [...this.state.completed, res]})
                     })
                     .catch(err => {
                         console.log(err)
@@ -46,6 +48,7 @@ class Completed extends React.Component {
                     <Card style={{ width: '17rem', textAlign: 'center' }} key={uid(title)}>
                         <Card.Img variant="top" src={title.image_url}/>
                         <Card.Title className="titleName">{title.title}</Card.Title>
+                        <Card.Text><h6>Score: {title.your_score}</h6></Card.Text>
                         <Button className="btn-card" variant="danger">Edit Review</Button>
                     </Card>
                 )

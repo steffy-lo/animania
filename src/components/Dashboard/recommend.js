@@ -57,7 +57,8 @@ class Recommend extends React.Component {
                     <Card style={{ width: '17rem', textAlign: 'center' }} key={uid(title)}>
                         <Card.Img variant="top" src={title.image_url}/>
                         <Card.Title className="titleName">{title.title}</Card.Title>
-                        <Button className="btn-card" variant="danger">+ Watch List</Button>
+                        <Button className="btn-card" variant="danger"
+                                onClick={() => this.props.addToWatch(this.props.username, title.mal_id, title.title, title.image_url)}>+ Watch List</Button>
                     </Card>
                 )
             });

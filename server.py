@@ -165,7 +165,7 @@ def del_completed():
     user = user_data.find_one({'username': req["username"]})
     anime_list = user["anime_list"]
     try:
-        del anime_list[req["anime_id"]]
+        del anime_list[str(req["anime_id"])]
         user_data.find_one_and_update({"username": req["username"]},
                                       {"$set": {"anime_list": anime_list}
                                        })
@@ -183,7 +183,7 @@ def del_to_watch():
     user = user_data.find_one({'username': req["username"]})
     watch_list = user["to_watch"]
     try:
-        del watch_list[req["anime_id"]]
+        del watch_list[str(req["anime_id"])]
         user_data.find_one_and_update({"username": req["username"]},
                                       {"$set": {"to_watch": watch_list}
                                        })

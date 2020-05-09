@@ -27,11 +27,7 @@ class Trending extends React.Component {
     }
 
     showModal() {
-        console.log(this.state.showAnimeInfo);
         if(this.state.showAnimeInfo){
-
-            const animeModal= this.state.animeInfo;
-            console.log(animeModal)
             return(
                 <div className="info-prompt">
                     <Modal.Dialog size="lg" centered>
@@ -46,7 +42,7 @@ class Trending extends React.Component {
                     </Modal.Body>
 
                     <Modal.Footer>
-                        <Button variant="secondary">Close</Button>
+                        <Button variant="secondary" onClick={() => this.setState({showAnimeInfo: false})}>Close</Button>
                     </Modal.Footer>
                     </Modal.Dialog>
                 </div>
@@ -74,7 +70,8 @@ class Trending extends React.Component {
                     <Card style={{ width: '17rem', textAlign: 'center' }} key={uid(title)}>
                         <Card.Img className ="anime-img" variant="top" onMouseOver = {()=> this.getAnimeInfo(title.mal_id)} src={title.image_url}/>
                         <Card.Title>{title.title}</Card.Title>
-                        <Button className="btn-card" variant="danger">+ Watch List</Button>
+                        <Button className="btn-card" variant="danger"
+                                onClick={() => this.props.addToWatch(this.props.username, title.mal_id, title.title, title.image_url)}>+ Watch List</Button>
                     </Card>
                 )
             });
@@ -84,7 +81,7 @@ class Trending extends React.Component {
                     <div className="titles-container">
                         {animeTitles}
                     </div>
-                        {this.showModal()}
+                    {this.showModal()}
                     
                 </div>
             )

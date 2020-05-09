@@ -26,6 +26,14 @@ class Watch extends React.Component {
         setTimeout(this.getWatchList, 1000)
     }
 
+    componentDidUpdate(prevProps) {
+        // Typical usage (don't forget to compare props):
+        if (this.props.watchlist !== prevProps.watchlist) {
+            this.setState({toWatch: []},
+                () => this.getWatchList());
+        }
+    }
+
     render() {
         if (this.state.loaded) {
             const animeTitles = this.state.toWatch.map(title => {

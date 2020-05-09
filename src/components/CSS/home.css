@@ -5,17 +5,16 @@
 }
 
 .anime-info {
-    margin: 5%;
+    padding:3%;
 }
 
-.anime-info .card {
-    display: inline-block;
+.anime-info .col .card{
+    max-width: 20%;
 }
 
-.anime-desc {
+.anime-desc .col{
     margin: 3%;
-    max-width: 80%;
-    display: inline-block;
+    max-width: 100%;
 }
 
 .review-prompt {
@@ -24,6 +23,17 @@
     left: 10%;
     right: 10%;
     z-index: 100;
+}
+.info-prompt {
+    position: absolute;
+    top: 5%;
+    left: 10%;
+    right: 10%;
+    z-index: 100;
+}
+
+p{
+    font-size: small;
 }
 
 .full-scroll {
@@ -147,4 +157,8 @@
     position: fixed; /* Set the navbar to fixed position */
     top: 0; /* Position the navbar at the top of the page */
     width: 100%; /* Full width */
+}
+
+.anime-img:hover{
+    opacity:22%;
 }

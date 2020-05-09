@@ -1,13 +1,15 @@
 import React from 'react';
 import {uid} from "react-uid";
-import {Button, Card, Col, Row} from "react-bootstrap";
-import {makeRequest} from "../Actions/dashboard";
+import {Button, Card, Col, Modal, Row} from "react-bootstrap";
+import { makeRequest} from "../Actions/dashboard";
 
 class AnimeInfo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loaded: false
+            loaded: false,
+            error: false,
+            showAdded: false
         };
         this.getAnimeInfo = this.getAnimeInfo.bind(this);
     }
@@ -43,8 +45,9 @@ class AnimeInfo extends React.Component {
                         <Col className="img-search" md = "auto">
                         <Card><Card.Img variant="top" src={this.state.anime.image_url}/>
                         <Card.Title className="titleName">{this.state.anime.title}</Card.Title>
-                        <Button className="btn-card" variant="danger">+ Watch List</Button>
-                        <Button className="btn-card" variant="danger">+ Completed List</Button></Card>
+                        <Button className="btn-card" variant="danger"
+                                onClick={() => this.props.addToWatch(this.props.username, this.state.anime.mal_id, this.state.anime.title, this.state.anime.image_url)}>+ Watch List</Button>
+                        <Button className="btn-card" variant="danger" onClick={() => this.props.reviewPrompt(this.state.anime)}>+ Completed List</Button></Card>
                         
                         </Col>
                         <Col className="anime-desc">
@@ -63,9 +66,6 @@ class AnimeInfo extends React.Component {
                             <h5>See more info at <a href={this.state.anime.url}>{this.state.anime.url}</a></h5>
                         </Col>
                     </Row>
-                    
-                        
-                    
                 </div>
             );
         }

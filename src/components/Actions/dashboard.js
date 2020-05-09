@@ -125,6 +125,26 @@ export const addCompleted = (username, anime_id, score) => {
     });
 };
 
+export const addToWatchList = (username, anime_id, title, image_url) => {
+    return new Promise((resolve, reject) => {
+        axios
+            .patch(PREFIX + "/add_to_watch", JSON.stringify({ username, anime_id, title, image_url }),
+                { headers: { "Content-Type": "application/json" } })
+            .then(res => {
+                if (!res || !res.data)
+                    reject({ stat: 500, msg: "Something went wrong" });
+                resolve(res.data);
+            })
+            .catch(err => {
+                reject({
+                    stat: err.response.status,
+                    msg:
+                        "There was an error processing your request. Please, try again later."
+                });
+            });
+    });
+};
+
 export const removeFromWatch = (username, anime_id) => {
     return new Promise((resolve, reject) => {
         axios

@@ -7,7 +7,7 @@ import ForYou from './recommend';
 import Completed from './completed';
 import ToWatch from './watch';
 import AnimeInfo from './anime';
-import {getUser, addUser, makeRequest, addCompleted, removeFromWatch} from '../Actions/dashboard';
+import {getUser, addUser, makeRequest, addCompleted, removeFromWatch, addToWatchList} from '../Actions/dashboard';
 import {Card} from "react-bootstrap";
 import {uid} from "react-uid";
 
@@ -18,6 +18,9 @@ class Home extends React.Component {
         this.state = {
             currentPage: "trending",
             reviewPrompt: {show: false},
+            addedPrompt: false,
+            addedError: false,
+            addedAnime: "",
             username: this.props.state.username,
             loaded: false,
             query: "",
@@ -31,6 +34,8 @@ class Home extends React.Component {
         this.updateCompletedList = this.updateCompletedList.bind(this);
         this.displaySelectedPage = this.displaySelectedPage.bind(this);
         this.displayReviewPrompt = this.displayReviewPrompt.bind(this);
+        this.showAddedMessage = this.showAddedMessage.bind(this);
+        this.addToWatch = this.addToWatch.bind(this);
     }
 
     getAnimes() {
@@ -78,19 +83,80 @@ class Home extends React.Component {
         setTimeout(this.getUserData, 0);
     }
 
+    showAddedMessage() {
+        if (this.state.addedPrompt) {
+            return (
+                <div className="add-prompt">
+                    <Modal.Dialog>
+                        <Modal.Header>
+                            <Modal.Title>Added to Watch List</Modal.Title>
+                        </Modal.Header>
+
+                        <Modal.Body>
+                            <p>{this.state.addedAnime} has been successfully added to your watch list.</p>
+                        </Modal.Body>
+
+                        <Modal.Footer>
+                            <Button variant="danger" onClick={() => this.setState({addedPrompt: false})}>Close</Button>
+                        </Modal.Footer>
+                    </Modal.Dialog>
+                </div>
+            )
+        }
+        if (this.state.addedError) {
+            return (
+                <div className="add-prompt">
+                    <Modal.Dialog>
+                        <Modal.Header>
+                            <Modal.Title>Request Error</Modal.Title>
+                        </Modal.Header>
+
+                        <Modal.Body>
+                            <p>There was something wrong with your request. Please try again later.</p>
+                        </Modal.Body>
+
+                        <Modal.Footer>
+                            <Button variant="danger" onClick={() => {
+                                this.setState({showAdded: false});
+                                this.setState({addedAnime: ""});}
+                            }>Close</Button>
+                        </Modal.Footer>
+                    </Modal.Dialog>
+                </div>
+            )
+        }
+        return null;
+
+    }
+
+    addToWatch(username, mal_id, title, image_url) {
+        addToWatchList(username, mal_id, title, image_url)
+            .then(res =>{
+                console.log(res);
+                this.setState({addedPrompt: true});
+                this.setState({addedAnime: title})
+            })
+            .catch(err => {
+                this.setState({addedPrompt: true});
+                this.setState({addedError: true});
+                console.log(err)
+            });
+        setTimeout(this.getUserData, 1000)
+    }
+
 
     displaySelectedPage() {
         if (this.state.loaded) {
             if (this.state.currentPage === "trending") {
-                return <Trending/>
+                return <Trending username={this.props.state.username} addToWatch={this.addToWatch} />
             } else if (this.state.currentPage === "forYou") {
-                return <ForYou username={this.props.state.username} animes={this.state.userData.animes}/>
+                return <ForYou username={this.props.state.username} addToWatch={this.addToWatch} animes={this.state.userData.animes}/>
             } else if (this.state.currentPage === "completed") {
                 return <Completed username={this.props.state.username} animes={this.state.userData.animes}/>
             } else if (this.state.currentPage === "toWatch") {
                 return <ToWatch username={this.props.state.username} reviewPrompt={this.showReviewPrompt} watchlist={this.state.userData.toWatch}/>
             } else if (this.state.currentPage === "animeInfo") {
-                return <AnimeInfo username={this.props.state.username} anime={this.state.title}/>
+                return <AnimeInfo username={this.props.state.username} addToWatch={this.addToWatch} reviewPrompt={this.showReviewPrompt} anime={this.state.searchedTitle}/>
             }
         } else {
             return <Trending/>;
@@ -114,6 +180,7 @@ class Home extends React.Component {
                     .then(res => {
                         console.log(res)
                     })
+                setTimeout(this.getUserData, 1000)
             }
         }
     }
@@ -121,7 +188,7 @@ class Home extends React.Component {
     displayReviewPrompt() {
         if (this.state.reviewPrompt.show) {
             return (
-                <div className="review-prompt">
+                <div className="add-prompt">
                     <Modal.Dialog>
                         <Modal.Header>
                             <Modal.Title>{this.state.reviewPrompt.anime.title} Review</Modal.Title>
@@ -134,6 +201,7 @@ class Home extends React.Component {
                         </Modal.Body>
 
                         <Modal.Footer>
+                            <Button variant="secondary" onClick={() => this.setState({reviewPrompt: {show: false}})}>Cancel</Button>
                             <Button variant="danger" onClick={() => this.updateCompletedList(this.state.reviewPrompt.anime.anime_id)}>Done</Button>
                         </Modal.Footer>
                     </Modal.Dialog>
@@ -161,7 +229,7 @@ class Home extends React.Component {
                                         this.setState({currentPage: "animeInfo"});
                                         this.search.value = "";
                                         this.setState({searchResults: []});
-                                        this.setState({title: title})}
+                                        this.setState({searchedTitle: title})}
                                 }>
                                     <Card style={{ width: '8rem', display: 'inline-block'}} key={uid(title)}>
                                         <Card.Img variant="top" src={title.image_url}/>
@@ -192,6 +260,7 @@ class Home extends React.Component {
                 {this.displaySelectedPage()}
             </div>
             {this.displayReviewPrompt()}
+                {this.showAddedMessage()}
             </div>
         )
     }

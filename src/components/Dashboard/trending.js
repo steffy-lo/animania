@@ -10,7 +10,7 @@ class Trending extends React.Component {
         this.state = {
             results: [],
             loaded: false,
-            showanimeInfo:false
+            showanimeInfo: false
         }
         this.showModal = this.showModal.bind(this);
         this.getAnimeInfo = this.getAnimeInfo.bind(this);
@@ -36,8 +36,8 @@ class Trending extends React.Component {
                         <h6>{this.state.animeInfo.title}</h6>
                         <p>Score: {this.state.animeInfo.score}
                         <br/>Episodes: {this.state.animeInfo.episodes}
+                        <br/>
                         <br/>{this.state.animeInfo.synopsis}
-                        
                         </p>
                     </Modal.Body>
 
@@ -68,10 +68,11 @@ class Trending extends React.Component {
             const animeTitles = this.state.results.map(title =>{
                 return(
                     <Card style={{ width: '17rem', textAlign: 'center' }} key={uid(title)}>
-                        <Card.Img className ="anime-img" variant="top" onMouseOver = {()=> this.getAnimeInfo(title.mal_id)} src={title.image_url}/>
+                        <Card.Img className variant="top" src={title.image_url}/>
                         <Card.Title>{title.title}</Card.Title>
                         <Button className="btn-card" variant="danger"
                                 onClick={() => this.props.addToWatch(this.props.username, title.mal_id, title.title, title.image_url)}>+ Watch List</Button>
+                        <Button className="btn-card" variant="danger" onClick={()=> this.getAnimeInfo(title.mal_id)}>See Info</Button>
                     </Card>
                 )
             });
@@ -82,7 +83,7 @@ class Trending extends React.Component {
                         {animeTitles}
                     </div>
                     {this.showModal()}
-                    
+
                 </div>
             )
         }

@@ -260,7 +260,7 @@ class Home extends React.Component {
                 {this.displaySelectedPage()}
             </div>
             {this.displayReviewPrompt()}
-                {this.showAddedMessage()}
+            {this.showAddedMessage()}
             </div>
         )
     }

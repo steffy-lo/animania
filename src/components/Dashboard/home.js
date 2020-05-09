@@ -75,7 +75,7 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        setInterval(this.getUserData, 5000);
+        setTimeout(this.getUserData, 0);
     }
 
 

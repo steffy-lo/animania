@@ -27,7 +27,7 @@ class Recommend extends React.Component {
     }
 
     loadRecommendations() {
-        if (Object.keys(this.props.animes).length > 0) {
+        if (this.props.animes != null) {
             getRecommendations(this.props.username, "user")
                 .then(recs => {
                     console.log(recs);
@@ -47,7 +47,7 @@ class Recommend extends React.Component {
     }
 
     componentDidMount() {
-        setTimeout(this.loadRecommendations, 0);
+        setTimeout(this.loadRecommendations, 1000);
     }
 
     render() {

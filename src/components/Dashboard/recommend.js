@@ -3,17 +3,25 @@ import '../CSS/recommend.css'
 import Refinement from "./refinement";
 import {makeRequest, getRecommendations} from '../Actions/dashboard';
 import {uid} from "react-uid";
-import {Button, Card} from "react-bootstrap";
+import {Button, Card, Modal} from "react-bootstrap";
 
 class Recommend extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             recommendations: [],
-            loaded: false
+            loaded: false,
+            showanimeInfo: false,
+            animeInfo: {
+                title: "",
+                score: "",
+                episodes: "",
+                synopsis: ""
+            }
         };
         this.getAnimeInfo = this.getAnimeInfo.bind(this);
         this.loadRecommendations = this.loadRecommendations.bind(this);
+        this.showModal = this.showModal.bind(this);
     }
 
     getAnimeInfo(anime_id) {
@@ -50,6 +58,32 @@ class Recommend extends React.Component {
         setTimeout(this.loadRecommendations, 1000);
     }
 
+    showModal() {
+        if(this.state.showAnimeInfo){
+            return(
+                <div className="info-prompt">
+                    <Modal.Dialog size="lg" centered>
+
+                        <Modal.Body>
+                            <h6>{this.state.animeInfo.title}</h6>
+                            <p>Score: {this.state.animeInfo.score}
+                                <br/>Episodes: {this.state.animeInfo.episodes}
+                                <br/>
+                                <br/>{this.state.animeInfo.synopsis}
+                            </p>
+                        </Modal.Body>
+
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={() => this.setState({showAnimeInfo: false})}>Close</Button>
+                        </Modal.Footer>
+                    </Modal.Dialog>
+                </div>
+
+            )
+        }
+        return null;
+    }
+
     render() {
         if (this.state.loaded) {
             const animeTitles = this.state.recommendations.map(title => {
@@ -59,6 +93,15 @@ class Recommend extends React.Component {
                         <Card.Title className="titleName">{title.title}</Card.Title>
                         <Button className="btn-card" variant="danger"
                                 onClick={() => this.props.addToWatch(this.props.username, title.mal_id, title.title, title.image_url)}>+ Watch List</Button>
+                        <Button className="btn-card" variant="danger" onClick={()=> {
+                            this.setState({animeInfo: {
+                                    title: title.title,
+                                    score: title.score,
+                                    episodes: title.episodes,
+                                    synopsis: title.synopsis
+                                }});
+                            this.setState({showAnimeInfo: true})
+                        }}>See Info</Button>
                     </Card>
                 )
             });
@@ -69,6 +112,7 @@ class Recommend extends React.Component {
                         <div className="titles-container">
                             {animeTitles}
                         </div>
+                        {this.showModal()}
                     </div>
                 )
             } else {

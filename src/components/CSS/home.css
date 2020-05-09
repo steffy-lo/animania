@@ -27,12 +27,12 @@
 .info-prompt {
     position: absolute;
     top: 0;
-    left: 10%;
-    right: 10%;
+    left: 30%;
+    right: 30%;
     z-index: 100;
 }
 
-p{
+p {
     font-size: small;
 }
 

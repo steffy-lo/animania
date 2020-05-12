@@ -104,17 +104,10 @@ p {
 }
 
 .btn-top {
-    background-color: red !important;
-    border-color: red !important;
     margin-left:1%;
     border-radius: 20px !important;
     margin-top:1.2%;
     margin-bottom: 1%;
-}
-
-.btn-top:hover{
-    background-color: firebrick!important;
-    border-color: firebrick !important;
 }
 
 .search{

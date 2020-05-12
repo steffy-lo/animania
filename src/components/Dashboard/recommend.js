@@ -22,11 +22,13 @@ class Recommend extends React.Component {
         this.getAnimeInfo = this.getAnimeInfo.bind(this);
         this.loadRecommendations = this.loadRecommendations.bind(this);
         this.showModal = this.showModal.bind(this);
+        this.applyFilter = this.applyFilter.bind(this);
     }
 
     getAnimeInfo(anime_id) {
         makeRequest('GET', "https://api.jikan.moe/v3/anime/" + anime_id)
             .then(info => {
+                this.state.recommendations.sort((a, b) => (a.score < b.score) ? 1 : -1);
                 this.setState({recommendations: [...this.state.recommendations, JSON.parse(info)]})
             })
             .catch(err => {
@@ -35,7 +37,7 @@ class Recommend extends React.Component {
     }
 
     loadRecommendations() {
-        if (this.props.animes != null) {
+        if (this.props.completed != null) {
             getRecommendations(this.props.username, "user")
                 .then(recs => {
                     console.log(recs);
@@ -56,6 +58,10 @@ class Recommend extends React.Component {
 
     componentDidMount() {
         setTimeout(this.loadRecommendations, 1000);
+    }
+
+    applyFilter(newResults) {
+        this.setState({recommendations: newResults});
     }
 
     showModal() {
@@ -108,7 +114,7 @@ class Recommend extends React.Component {
             if (animeTitles.length > 0) {
                 return (
                     <div className="scroll">
-                        <Refinement/>
+                        <Refinement results={this.state.recommendations} applyFilter={this.applyFilter} completed={this.props.completed}/>
                         <div className="titles-container">
                             {animeTitles}
                         </div>

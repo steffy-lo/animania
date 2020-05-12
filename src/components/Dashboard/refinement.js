@@ -2,6 +2,7 @@ import { Button, Form } from 'react-bootstrap';
 import React from 'react';
 import '../CSS/refinement.css'
 import { uid } from "react-uid";
+import {makeRequest} from "../Actions/dashboard";
 
 class Refinement extends React.Component {
 
@@ -60,6 +61,7 @@ class Refinement extends React.Component {
         this.updateGenreSelect = this.updateGenreSelect.bind(this);
         this.displayGenres = this.displayGenres.bind(this);
         this.updateSort = this.updateSort.bind(this);
+        this.updateWatchFilter = this.updateWatchFilter.bind(this);
     }
 
     updateSort() {
@@ -75,7 +77,6 @@ class Refinement extends React.Component {
         } else {
             this.setState({selectGenre: false})
         }
-
     }
 
     addRemoveGenre(e, elmId) {
@@ -118,15 +119,37 @@ class Refinement extends React.Component {
 
     }
 
+    updateWatchFilter(e) {
+        if (e.target.checked) {
+            const notWatched = [];
+            const watched = [];
+            const completed = Object.keys(this.props.completed);
+            for (let i = 0; i < this.props.results.length; i++) {
+                const anime = this.props.results[i];
+                if (!completed.includes(anime.mal_id.toString())) {
+                    notWatched.push(anime)
+                } else {
+                    watched.push(anime)
+                }
+            }
+            this.setState({watched: watched});
+            this.setState({notWatched: notWatched},
+                () => this.props.applyFilter(this.state.notWatched));
+        } else {
+            const addBackWatched = this.props.results.concat(this.state.watched);
+            addBackWatched.sort((a, b) => (a.score < b.score) ? 1 : -1);
+            this.props.applyFilter(addBackWatched)
+        }
+    }
+
     render() {
         return(
             <div className="refinement">
                 <div className="sort">
                     <h6>SORT</h6>
                     <select id="sort-select" onChange={this.updateSort}>
-                        <option value="none">None</option>
-                        <option value="pop">Popularity</option>
                         <option value="rank">Ranking</option>
+                        <option value="pop">Popularity</option>
                         <option value="year">Year</option>
                     </select>
                 </div>
@@ -144,6 +167,7 @@ class Refinement extends React.Component {
                         label="Not Watched"
                         type="checkbox"
                         id={`custom-inline-checkbox-1`}
+                        onChange={this.updateWatchFilter}
                     />
                 </div>
                 {this.displayGenres()}

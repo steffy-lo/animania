@@ -14,13 +14,14 @@ class Trending extends React.Component {
         }
         this.showModal = this.showModal.bind(this);
         this.getAnimeInfo = this.getAnimeInfo.bind(this);
+        this.applyFilter = this.applyFilter.bind(this);
     }
 
     componentDidMount(){
-        const component = this;
-        makeRequest('GET', "https://api.jikan.moe/v3/top/anime/1/tv").then(function(data){
-            component.setState({"results": JSON.parse(data).top}, () => {
-                component.setState({"loaded": true})
+        makeRequest('GET', "https://api.jikan.moe/v3/top/anime/1/tv")
+            .then(data => {
+                this.setState({"results": JSON.parse(data).top}, () => {
+                this.setState({"loaded": true})
             })
             
         });
@@ -63,6 +64,10 @@ class Trending extends React.Component {
             })
     }
 
+    applyFilter(newResults) {
+        this.setState({results: newResults});
+    }
+
     render() {
         if (this.state.loaded) {
             const animeTitles = this.state.results.map(title =>{
@@ -78,12 +83,11 @@ class Trending extends React.Component {
             });
             return(
                 <div className="scroll">
-                    <Refinement/>
+                    <Refinement results={this.state.results} applyFilter={this.applyFilter} completed={this.props.completed}/>
                     <div className="titles-container">
                         {animeTitles}
                     </div>
                     {this.showModal()}
-
                 </div>
             )
         }

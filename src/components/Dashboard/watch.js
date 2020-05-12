@@ -30,7 +30,7 @@ class Watch extends React.Component {
         // Typical usage (don't forget to compare props):
         if (this.props.watchlist !== prevProps.watchlist) {
             this.setState({toWatch: []},
-                () => this.getWatchList());
+                () => setTimeout(this.getWatchList, 1000));
         }
     }
 

@@ -148,9 +148,9 @@ class Home extends React.Component {
     displaySelectedPage() {
         if (this.state.loaded) {
             if (this.state.currentPage === "trending") {
-                return <Trending username={this.props.state.username} addToWatch={this.addToWatch} />
+                return <Trending username={this.props.state.username} addToWatch={this.addToWatch} completed={this.state.userData.animes}/>
             } else if (this.state.currentPage === "forYou") {
-                return <ForYou username={this.props.state.username} addToWatch={this.addToWatch} animes={this.state.userData.animes}/>
+                return <ForYou username={this.props.state.username} addToWatch={this.addToWatch} completed={this.state.userData.animes}/>
             } else if (this.state.currentPage === "completed") {
                 return <Completed username={this.props.state.username} animes={this.state.userData.animes} updateData={this.getUserData}/>
             } else if (this.state.currentPage === "toWatch") {

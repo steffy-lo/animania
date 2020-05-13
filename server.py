@@ -25,7 +25,7 @@ scope = ["https://spreadsheets.google.com/feeds",
          "https://www.googleapis.com/auth/drive.file",
          "https://www.googleapis.com/auth/drive"]
 
-creds = ServiceAccountCredentials.from_json_keyfile_name("./creds.json", scope)
+creds = ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
 gs = gspread.authorize(creds)
 review_sheet = gs.open("reviews").sheet1
 get_similar_users = None
@@ -37,10 +37,13 @@ class CustomJSONEncoder(JSONEncoder):
     def default(self, obj): return json_util.default(obj)
 
 
-app = Flask("animania")
+app = Flask("animania", static_folder='./build', static_url_path='/')
 app.json_encoder = CustomJSONEncoder
 CORS(app)
 
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
 
 # ====================================== GET METHODS ==================================================
 @app.route('/get_user/<username>', methods=["GET"])

@@ -1,1 +1,1 @@
-web: gunicorn server:animania
+web: gunicorn app:app

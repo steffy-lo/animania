@@ -19,7 +19,7 @@ Jinja2==2.11.2
 joblib==0.14.1
 jsonschema==3.2.0
 jupyter==1.0.0
-jupyter-client==6.1.3
+jupyter-client==6.1.3pip3
 jupyter-console==6.1.0
 jupyter-core==4.6.3
 MarkupSafe==1.1.1

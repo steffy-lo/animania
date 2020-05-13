@@ -28,7 +28,9 @@ class Recommend extends React.Component {
         makeRequest('GET', "https://api.jikan.moe/v3/anime/" + anime_id)
             .then(info => {
                 this.state.recommendations.sort((a, b) => (a.score < b.score) ? 1 : -1);
-                this.setState({recommendations: [...this.state.recommendations, JSON.parse(info)]})
+                const res = JSON.parse(info);
+                this.setState({recommendations: [...this.state.recommendations, res]});
+                this.setState({noFilter: [...this.state.noFilter, res]})
             })
             .catch(err => {
                 console.log(err)
@@ -37,6 +39,7 @@ class Recommend extends React.Component {
 
     loadRecommendations() {
         if (this.props.completed != null) {
+            this.setState({noFilter: []});
             this.setState({recommendations: []},
             () => {
                 getRecommendations(this.props.username, "user")
@@ -94,7 +97,6 @@ class Recommend extends React.Component {
 
     render() {
         if (this.state.loaded) {
-            console.log(this.state.recommendations)
             const animeTitles = this.state.recommendations.map(title => {
                 return(
                     <Card style={{ width: '17rem', textAlign: 'center' }} key={uid(title)}>
@@ -117,7 +119,7 @@ class Recommend extends React.Component {
             if (animeTitles.length > 0) {
                 return (
                     <div className="scroll">
-                        <Refinement results={this.state.recommendations} loadRecs={this.loadRecommendations} applyFilter={this.applyFilter} completed={this.props.completed} filters={[false, true]}/>
+                        <Refinement results={this.state.recommendations} noFilter={this.state.noFilter} applyFilter={this.applyFilter} completed={this.props.completed} filters={[false, true]}/>
                         <div className="titles-container">
                             {animeTitles}
                         </div>

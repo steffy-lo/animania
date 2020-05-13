@@ -10,50 +10,49 @@ class Refinement extends React.Component {
         super(props);
         this.state = {
             genres: {
-                // booleans indicates include and exclude genres respectively
-                "action": [false, false],
-                "adventure": [false, false],
-                "cars": [false, false],
-                "comedy": [false, false],
-                "dementia": [false, false],
-                "demons": [false, false],
-                "drama": [false, false],
-                "ecchi": [false, false],
-                "fantasy": [false, false],
-                "game": [false, false],
-                "harem": [false, false],
-                "hentai": [false, false],
-                "historical": [false, false],
-                "horror": [false, false],
-                "josei": [false, false],
-                "kids": [false, false],
-                "magic": [false, false],
-                "martial arts": [false, false],
-                "mecha": [false, false],
-                "military": [false, false],
-                "music": [false, false],
-                "mystery": [false, false],
-                "parody": [false, false],
-                "police": [false, false],
-                "psychological": [false, false],
-                "romance": [false, false],
-                "samurai": [false, false],
-                "school": [false, false],
-                "sci-fi": [false, false],
-                "seinen": [false, false],
-                "shoujo": [false, false],
-                "shoujo ai": [false, false],
-                "shounen": [false, false],
-                "shounen ai": [false, false],
-                "slice of life": [false, false],
-                "space": [false, false],
-                "sports": [false, false],
-                "super power": [false, false],
-                "supernatural": [false, false],
-                "thriller": [false, false],
-                "vampire": [false, false],
-                "yaoi": [false, false],
-                "yuri": [false, false]
+                "action": false,
+                "adventure": false,
+                "cars": false,
+                "comedy": false,
+                "dementia": false,
+                "demons": false,
+                "drama": false,
+                "ecchi": false,
+                "fantasy": false,
+                "game": false,
+                "harem": false,
+                "hentai": false,
+                "historical": false,
+                "horror": false,
+                "josei": false,
+                "kids": false,
+                "magic": false,
+                "martial arts": false,
+                "mecha": false,
+                "military": false,
+                "music": false,
+                "mystery": false,
+                "parody": false,
+                "police": false,
+                "psychological": false,
+                "romance": false,
+                "samurai": false,
+                "school": false,
+                "sci-fi": false,
+                "seinen": false,
+                "shoujo": false,
+                "shoujo ai": false,
+                "shounen": false,
+                "shounen ai": false,
+                "slice of life": false,
+                "space": false,
+                "sports": false,
+                "super power": false,
+                "supernatural": false,
+                "thriller": false,
+                "vampire": false,
+                "yaoi": false,
+                "yuri": false,
             },
             selectGenre: false
         };
@@ -62,26 +61,53 @@ class Refinement extends React.Component {
         this.updateSort = this.updateSort.bind(this);
         this.updateType = this.updateType.bind(this);
         this.updateWatchFilter = this.updateWatchFilter.bind(this);
+        this.updateGenreFilter = this.updateGenreFilter.bind(this);
     }
 
     addRemoveGenre(e, elmId) {
         const selectedGenreBtn = document.getElementById(elmId);
         const genre = selectedGenreBtn.value;
         if (e.detail === 1) {
-            if (selectedGenreBtn.style.backgroundColor === 'dodgerblue' || selectedGenreBtn.style.backgroundColor === 'limegreen') {
+            if (selectedGenreBtn.style.backgroundColor === 'limegreen') {
                 selectedGenreBtn.style.backgroundColor = "#dc3545";
                 selectedGenreBtn.style.borderColor = "#dc3545";
-                this.setState({genres: {...this.state.genres, [genre]: [false, false]} })
+                this.setState({genres: {...this.state.genres, [genre]: false} },
+                    () => this.updateGenreFilter())
             }
             else {
                 selectedGenreBtn.style.backgroundColor = 'limegreen';
                 selectedGenreBtn.style.borderColor = 'limegreen';
-                this.setState({genres: {...this.state.genres, [genre]: [true, false]} })
+                this.setState({genres: {...this.state.genres, [genre]: true} },
+                    () => this.updateGenreFilter())
             }
-        } else if (e.detail === 2) {
-            selectedGenreBtn.style.backgroundColor = 'dodgerblue';
-            selectedGenreBtn.style.borderColor = 'dodgerblue';
-            this.setState({genres: {...this.state.genres, [genre]: [false, true]} })
+        }
+    }
+
+    updateGenreFilter() {
+        const add = [];
+        const remove = [];
+        for (let i = 0; i < this.props.noFilter.length; i++) {
+            const genres = this.props.noFilter[i].genres;
+            for (let j = 0; j < genres.length; j++) {
+                const genre = genres[j].name.toLowerCase();
+                if (this.state.genres[genre] && !add.includes(this.props.noFilter[i])) { // then include this anime
+                    add.push(this.props.noFilter[i])
+                }
+                if (!this.state.genres[genre] && !remove.includes(this.props.noFilter[i])) { // then exclude this anime
+                    remove.push(this.props.noFilter[i])
+                }
+            }
+        }
+
+        if (add.length !== 0) {
+            for (let k = 0; k < remove.length; k++) {
+                if (add.includes(remove[k])) {
+                    add.splice(k+1, 1)
+                }
+            }
+            this.props.applyFilter(add);
+        } else { // reset
+            this.props.applyFilter(this.props.noFilter);
         }
     }
 
@@ -89,7 +115,7 @@ class Refinement extends React.Component {
         if (this.state.selectGenre) {
             return (
                 <div className="display-genre">
-                    <h6>*Click to add genre and double-click to remove genre</h6>
+                    <h6>*Click to add genre</h6>
                     {Object.keys(this.state.genres).map((genre, index) => (
                         <Button variant="danger" key={uid(genre)} id={"genre" + index.toString()}
                                 onClick={e => this.addRemoveGenre(e, "genre" + index.toString())}

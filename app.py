@@ -11,7 +11,7 @@ from sklearn.metrics.pairwise import pairwise_distances
 from pymongo import MongoClient
 from bson import json_util
 
-client = MongoClient()
+client = MongoClient('mongodb+srv://admin:admin@cluster0-sbpfr.mongodb.net/test')
 db = client.animania
 user_data = db.users
 

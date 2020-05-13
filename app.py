@@ -37,7 +37,7 @@ class CustomJSONEncoder(JSONEncoder):
     def default(self, obj): return json_util.default(obj)
 
 
-app = Flask("animania", static_folder='./build', static_url_path='/')
+app = Flask(__name__, static_folder='./build', static_url_path='/')
 app.json_encoder = CustomJSONEncoder
 CORS(app)
 

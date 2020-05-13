@@ -37,13 +37,17 @@ class CustomJSONEncoder(JSONEncoder):
     def default(self, obj): return json_util.default(obj)
 
 
-app = Flask(__name__, static_folder='./build', static_url_path='/')
+app = Flask(__name__, static_folder='build', static_url_path='')
 app.json_encoder = CustomJSONEncoder
 CORS(app)
 
 @app.route('/')
 def index():
     return app.send_static_file('index.html')
+
+@app.route('/favicon.ico')
+def favicon():
+    return app.send_static_file('favicon.ico')
 
 # ====================================== GET METHODS ==================================================
 @app.route('/get_user/<username>', methods=["GET"])

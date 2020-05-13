@@ -83,7 +83,7 @@ class Trending extends React.Component {
             });
             return(
                 <div className="scroll">
-                    <Refinement results={this.state.results} applyFilter={this.applyFilter} completed={this.props.completed}/>
+                    <Refinement results={this.state.results} applyFilter={this.applyFilter} completed={this.props.completed} filters={[true, false]}/>
                     <div className="titles-container">
                         {animeTitles}
                     </div>

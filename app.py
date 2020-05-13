@@ -10,6 +10,7 @@ from jikanpy import Jikan
 from sklearn.metrics.pairwise import pairwise_distances
 from pymongo import MongoClient
 from bson import json_util
+import time
 
 client = MongoClient('mongodb://admin:admin@cluster0-shard-00-00-sbpfr.mongodb.net:27017,cluster0-shard-00-01-sbpfr.mongodb.net:27017,cluster0-shard-00-02-sbpfr.mongodb.net:27017/test?replicaSet=Cluster0-shard-0&ssl=true&authSource=admin')
 db = client.animania
@@ -97,7 +98,8 @@ def get_model_recommendations():
         if get_similar_users is None:
             get_similar_users = Thread(target=similar_users, args=(username,))
             get_similar_users.start()
-            return jsonify({'result': []})
+            time.sleep(25)
+            return jsonify({'result': 'processing'})
 
         # wait for thread to finish
         get_similar_users.join()
@@ -179,6 +181,7 @@ def add_completed():
     global get_similar_users
     if get_similar_users is not None:
         get_similar_users.join()
+
     get_similar_users = Thread(target=similar_users, args=(req["username"],))
     get_similar_users.start()
 

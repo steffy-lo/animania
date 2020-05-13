@@ -35,6 +35,9 @@ class Recommend extends React.Component {
             .catch(err => {
                 console.log(err)
             })
+            .finally(() => {
+                this.setState({loaded: true})
+            })
     }
 
     loadRecommendations() {
@@ -46,16 +49,18 @@ class Recommend extends React.Component {
                         getRecommendations(this.props.username, "user")
                             .then(recs => {
                                 console.log(recs);
-                                for (let i = 0; i < recs.length; i++) {
-                                    this.getAnimeInfo(recs[i]);
+                                if (recs === 'processing') {
+                                    this.loadRecommendations()
+                                } else {
+                                    for (let i = 0; i < recs.length; i++) {
+                                        this.getAnimeInfo(recs[i]);
+                                    }
                                 }
                             })
                             .catch(err => {
                                 console.log(err)
                             })
-                            .finally(() => {
-                                this.setState({loaded: true})
-                            })
+
                     })
             }
             else

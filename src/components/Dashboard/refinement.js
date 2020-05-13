@@ -55,28 +55,13 @@ class Refinement extends React.Component {
                 "yaoi": [false, false],
                 "yuri": [false, false]
             },
-            selectGenre: false,
-            sortBy: null
+            selectGenre: false
         };
         this.updateGenreSelect = this.updateGenreSelect.bind(this);
         this.displayGenres = this.displayGenres.bind(this);
         this.updateSort = this.updateSort.bind(this);
+        this.updateType = this.updateType.bind(this);
         this.updateWatchFilter = this.updateWatchFilter.bind(this);
-    }
-
-    updateSort() {
-        const sel = document.getElementById("sort-select");
-        this.setState({sortBy: sel.options[sel.selectedIndex].value});
-    }
-
-    updateGenreSelect() {
-        const sel = document.getElementById("genres-select");
-        const selected = sel.options[sel.selectedIndex].value;
-        if (selected === "select") {
-            this.setState({selectGenre: true})
-        } else {
-            this.setState({selectGenre: false})
-        }
     }
 
     addRemoveGenre(e, elmId) {
@@ -84,8 +69,8 @@ class Refinement extends React.Component {
         const genre = selectedGenreBtn.value;
         if (e.detail === 1) {
             if (selectedGenreBtn.style.backgroundColor === 'dodgerblue' || selectedGenreBtn.style.backgroundColor === 'limegreen') {
-                selectedGenreBtn.style.background = 'red';
-                selectedGenreBtn.style.borderColor = 'red';
+                selectedGenreBtn.style.backgroundColor = "#dc3545";
+                selectedGenreBtn.style.borderColor = "#dc3545";
                 this.setState({genres: {...this.state.genres, [genre]: [false, false]} })
             }
             else {
@@ -142,17 +127,48 @@ class Refinement extends React.Component {
         }
     }
 
-    render() {
-        return(
-            <div className="refinement">
-                <div className="sort">
-                    <h6>SORT</h6>
-                    <select id="sort-select" onChange={this.updateSort}>
-                        <option value="rank">Ranking</option>
-                        <option value="pop">Popularity</option>
-                        <option value="year">Year</option>
+    updateSort() {
+        const sel = document.getElementById("sort-select");
+        const sortby = sel.options[sel.selectedIndex].value;
+        this.props.results.sort((a, b) => (a[sortby] < b[sortby]) ? 1 : -1);
+        this.props.applyFilter(this.props.results)
+    }
+
+    updateGenreSelect() {
+        const sel = document.getElementById("genres-select");
+        const selected = sel.options[sel.selectedIndex].value;
+        if (selected === "select") {
+            this.setState({selectGenre: true});
+        } else {
+            this.setState({selectGenre: false})
+        }
+    }
+
+    updateType() {
+        const sel = document.getElementById("type-select");
+        const type = sel.options[sel.selectedIndex].value;
+        makeRequest('GET', "https://api.jikan.moe/v3/top/anime/1/" + type)
+            .then(data => {
+                this.props.applyFilter(JSON.parse(data).top)
+            });
+    }
+
+    showFilters() {
+        if (this.props.filters[0]) {
+            return (
+                <div className="type">
+                    <h6>TYPE</h6>
+                    <select id="type-select" onChange={this.updateType}>
+                        <option value="tv">TV</option>
+                        <option value="movie">Movie</option>
+                        <option value="airing">Airing</option>
                     </select>
                 </div>
+            )
+        }
+
+        if (this.props.filters[1]) {
+            return (
                 <div className="genres">
                     <h6>GENRES</h6>
                     <select id="genres-select" onChange={this.updateGenreSelect}>
@@ -160,6 +176,21 @@ class Refinement extends React.Component {
                         <option value="select">Select</option>
                     </select>
                 </div>
+            )
+        }
+    }
+
+    render() {
+        return(
+            <div className="refinement">
+                <div className="sort">
+                    <h6>SORT</h6>
+                    <select id="sort-select" onChange={this.updateSort}>
+                        <option value="score">Ranking</option>
+                        <option value="members">Popularity</option>
+                    </select>
+                </div>
+                {this.showFilters()}
                 <div className="watch-filter">
                     <Form.Check
                         custom

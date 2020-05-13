@@ -18,6 +18,12 @@ button.btn:hover, button.btn:active, button.btn:visited, button.btn:focus {
     margin-left: 2%;
 }
 
+.type {
+    display: inline-block;
+    position: relative;
+    margin-left: 2%;
+}
+
 .watch-filter {
     display: inline-block;
     position: relative;

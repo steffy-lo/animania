@@ -9,7 +9,6 @@ class Recommend extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            recommendations: [],
             loaded: false,
             showanimeInfo: false,
             animeInfo: {
@@ -38,19 +37,22 @@ class Recommend extends React.Component {
 
     loadRecommendations() {
         if (this.props.completed != null) {
-            getRecommendations(this.props.username, "user")
-                .then(recs => {
-                    console.log(recs);
-                    for (let i = 0; i < recs.length; i++) {
-                        this.getAnimeInfo(recs[i]);
-                    }
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-                .finally(() => {
-                    this.setState({loaded: true})
-                })
+            this.setState({recommendations: []},
+            () => {
+                getRecommendations(this.props.username, "user")
+                    .then(recs => {
+                        console.log(recs);
+                        for (let i = 0; i < recs.length; i++) {
+                            this.getAnimeInfo(recs[i]);
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+                    .finally(() => {
+                        this.setState({loaded: true})
+                    })
+            })
         } else {
             this.setState({loaded: true})
         }
@@ -92,6 +94,7 @@ class Recommend extends React.Component {
 
     render() {
         if (this.state.loaded) {
+            console.log(this.state.recommendations)
             const animeTitles = this.state.recommendations.map(title => {
                 return(
                     <Card style={{ width: '17rem', textAlign: 'center' }} key={uid(title)}>
@@ -114,7 +117,7 @@ class Recommend extends React.Component {
             if (animeTitles.length > 0) {
                 return (
                     <div className="scroll">
-                        <Refinement results={this.state.recommendations} applyFilter={this.applyFilter} completed={this.props.completed}/>
+                        <Refinement results={this.state.recommendations} loadRecs={this.loadRecommendations} applyFilter={this.applyFilter} completed={this.props.completed} filters={[false, true]}/>
                         <div className="titles-container">
                             {animeTitles}
                         </div>

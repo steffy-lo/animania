@@ -41,11 +41,11 @@ app = Flask(__name__, static_folder='build', static_url_path='')
 app.json_encoder = CustomJSONEncoder
 CORS(app)
 
-@app.route('/')
+@app.route('/', methods=["GET"])
 def index():
     return app.send_static_file('index.html')
 
-@app.route('/favicon.ico')
+@app.route('/favicon.ico', methods=["GET"])
 def favicon():
     return app.send_static_file('favicon.ico')
 

@@ -97,6 +97,7 @@ def get_model_recommendations():
         if get_similar_users is None:
             get_similar_users = Thread(target=similar_users, args=(username,))
             get_similar_users.start()
+            return jsonify({'result': []})
 
         # wait for thread to finish
         get_similar_users.join()

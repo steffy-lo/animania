@@ -38,31 +38,35 @@ class Recommend extends React.Component {
     }
 
     loadRecommendations() {
-        if (this.props.completed != null) {
-            this.setState({noFilter: []});
-            this.setState({recommendations: []},
-            () => {
-                getRecommendations(this.props.username, "user")
-                    .then(recs => {
-                        console.log(recs);
-                        for (let i = 0; i < recs.length; i++) {
-                            this.getAnimeInfo(recs[i]);
-                        }
+        this.setState({noFilter: []});
+        this.setState({recommendations: []}, () => {
+            if(this.props.completed != null && Object.keys(this.props.completed).length > 0) {
+                this.setState({recommendations: []},
+                    () => {
+                        getRecommendations(this.props.username, "user")
+                            .then(recs => {
+                                console.log(recs);
+                                for (let i = 0; i < recs.length; i++) {
+                                    this.getAnimeInfo(recs[i]);
+                                }
+                            })
+                            .catch(err => {
+                                console.log(err)
+                            })
+                            .finally(() => {
+                                this.setState({loaded: true})
+                            })
                     })
-                    .catch(err => {
-                        console.log(err)
-                    })
-                    .finally(() => {
-                        this.setState({loaded: true})
-                    })
+            }
+            else
+                {
+                    this.setState({loaded: true})
+                }
             })
-        } else {
-            this.setState({loaded: true})
-        }
     }
 
     componentDidMount() {
-        setTimeout(this.loadRecommendations, 1000);
+        setTimeout(this.loadRecommendations, 0);
     }
 
     applyFilter(newResults) {

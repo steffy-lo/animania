@@ -28,8 +28,7 @@ scope = ["https://spreadsheets.google.com/feeds",
 creds = ServiceAccountCredentials.from_json_keyfile_name("./creds.json", scope)
 gs = gspread.authorize(creds)
 review_sheet = gs.open("reviews").sheet1
-user_matrix = {}
-item_matrix = {}
+get_similar_users = None
 recommendations = {"user": {}, "item": {}}
 
 
@@ -86,60 +85,27 @@ def get_model_recommendations():
     if type == "user":
         k = settings["k"]
         n = settings["n"]
-        if username in user_matrix:
-            similarity, username_dict = user_matrix[username]
+
+        global get_similar_users
+        if get_similar_users is None:
+            return jsonify({'result': []})
+
+        # wait for thread to finish
+        get_similar_users.join()
+        if "user-based" not in recommendations:
+            user_based_recommendation(username, k, n)
         else:
-            similarity, username_dict = build_user_matrix(username)
-            user_matrix[username] = similarity, username_dict  # cache results
-
-        top_recs = []
-        if username in recommendations["user"]:
-            top_recs = recommendations["user"][username]
-        else:
-            key_list, val_list = list(username_dict.keys()), list(username_dict.values())
-            arr_sim = similarity[username_dict[username]]
-
-            arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
-            sim_inds = arr_sim.argsort()
-            sorted_arr = arr_recs[sim_inds]
-            top_k = []
-            i = 1
-            while True and len(top_k) < k and i < k * 2:
-                try:
-                    user = sorted_arr[i]
-                    animelist = sorted(jikan.user(username=user, request='animelist')['anime'], key=by_score,
-                                       reverse=True)[:n * 2]
-                    top_k.append(user)
-                    anime_ids = [anime["mal_id"] for anime in animelist]
-                    top_recs.extend(anime_ids)
-                except:
-                    print("An unexpected API error occured.")  # user might have a private animelist
-                i += 1
-
-            recommendations["user"][username] = list(set(top_recs))[:k * n]
-
-        return jsonify({'result': list(set(top_recs))[:k * n]})
+            k_prev, n_prev, recs = recommendations["user-based"]
+            if k_prev != k or n_prev != n:
+                user_based_recommendation(username, k, n)
+        return jsonify({'result': recommendations["user-based"][-1]})
 
     else:
         q = settings["q"]
-        if anime_id in item_matrix:
-            similarity, anime_id_dict = item_matrix[anime_id]
-        else:
-            similarity, anime_id_dict = build_item_matrix(anime_id)
-            item_matrix[anime_id] = similarity, anime_id_dict  # cache results
+        if anime_id not in recommendations["item"]:
+            item_based_recommendation(anime_id)
 
-        if anime_id in recommendations["item"]:
-            return jsonify({'result': recommendations["items"][anime_id]})
-        else:
-            key_list, val_list = list(anime_id_dict.keys()), list(anime_id_dict.values())
-            arr_sim = similarity[anime_id_dict[int(anime_id)]]
-            arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
-            sim_inds = arr_sim.argsort()
-            sorted_arr = arr_recs[sim_inds]
-            top_k = sorted_arr[1:q]  # k=10, the top anime is always the anime itself
-            recommendations["item"][anime_id] = list(set(top_k.tolist()))
-
-            return jsonify({'result': list(set(top_k.tolist()))})
+        return jsonify({'result': recommendations["items"][anime_id][1:q]})
 
 
 # ====================================== POST METHODS =================================================
@@ -201,6 +167,10 @@ def add_completed():
         if key not in req:
             abort(400)
 
+    global get_similar_users
+    get_similar_users = Thread(target=similar_users, args=(req["username"],))
+    get_similar_users.start()
+
     user = user_data.find_one({'username': req["username"]})
     anime_list = user["anime_list"]
     anime_list[str(req["anime_id"])] = req["score"]
@@ -254,7 +224,8 @@ def settings():
     return jsonify(req)
 
 
-def build_item_matrix(anime_id):
+def item_based_recommendation(anime_id):
+    # build item similarity matrix
     user_stats = pd.DataFrame(review_sheet.get_all_records()).sample(n=10000)
     cells = review_sheet.findall(anime_id)[:20]
 
@@ -274,10 +245,19 @@ def build_item_matrix(anime_id):
     for line in user_stats.itertuples():
         train_data_matrix[username_dict[line[1]] - 1, anime_id_dict[line[2]] - 1] = line[3]
 
-    return pairwise_distances(train_data_matrix.T, metric='cosine'), anime_id_dict
+    similarity = pairwise_distances(train_data_matrix.T, metric='cosine')
+
+    # get top similar animes
+    key_list, val_list = list(anime_id_dict.keys()), list(anime_id_dict.values())
+    arr_sim = similarity[anime_id_dict[int(anime_id)]]
+    arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
+    sim_inds = arr_sim.argsort()
+    sorted_arr = arr_recs[sim_inds]
+    recommendations["item"][anime_id] = list(set(sorted_arr.tolist()))
 
 
-def build_user_matrix(username):
+def similar_users(username):
+    # build user similarity matrix
     user_stats = pd.DataFrame(review_sheet.get_all_records()).sample(n=10000)
     user = user_data.find_one({'username': username})
     anime_list = user["anime_list"]
@@ -299,7 +279,35 @@ def build_user_matrix(username):
     for line in user_stats.itertuples():
         train_data_matrix[username_dict[line[1]] - 1, anime_id_dict[line[2]] - 1] = line[3]
 
-    return pairwise_distances(train_data_matrix, metric='cosine'), username_dict
+    similarity = pairwise_distances(train_data_matrix, metric='cosine')
+
+    # get top similar users
+    key_list, val_list = list(username_dict.keys()), list(username_dict.values())
+    arr_sim = similarity[username_dict[username]]
+
+    arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
+    sim_inds = arr_sim.argsort()
+    sorted_arr = arr_recs[sim_inds]
+    recommendations["user"][username] = list(set(sorted_arr.tolist()))
+
+
+def user_based_recommendation(username, k, n):
+    top_recs = []
+    top_k = []
+    i = 1
+    while len(top_k) < k and i < k * 2:
+        try:
+            user = recommendations["user"][username][i]
+            animelist = sorted(jikan.user(username=user, request='animelist')['anime'], key=by_score,
+                               reverse=True)[:n]
+            top_k.append(user)
+            anime_ids = [anime["mal_id"] for anime in animelist]
+            top_recs.extend(anime_ids)
+        except:
+            print("An unexpected API error occured.")  # user might have a private animelist
+        i += 1
+
+    recommendations["user-based"] = k, n, list(set(top_recs))  # cache results
 
 
 def by_score(anime):

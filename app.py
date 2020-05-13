@@ -95,7 +95,8 @@ def get_model_recommendations():
 
         global get_similar_users
         if get_similar_users is None:
-            return jsonify({'result': []})
+            get_similar_users = Thread(target=similar_users, args=(username,))
+            get_similar_users.start()
 
         # wait for thread to finish
         get_similar_users.join()
@@ -175,6 +176,8 @@ def add_completed():
             abort(400)
 
     global get_similar_users
+    if get_similar_users is not None:
+        get_similar_users.join()
     get_similar_users = Thread(target=similar_users, args=(req["username"],))
     get_similar_users.start()
 

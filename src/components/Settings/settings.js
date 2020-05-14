@@ -49,7 +49,6 @@ class Settings extends React.Component {
         }
         patchSettings(this.props.state.username, values)
             .then(res => {
-                console.log(res);
                 this.setState({success: true})
             })
 

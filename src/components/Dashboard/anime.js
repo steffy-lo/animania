@@ -17,7 +17,6 @@ class AnimeInfo extends React.Component {
     getAnimeInfo() {
         makeRequest('GET', "https://api.jikan.moe/v3/anime/" + this.props.anime.mal_id)
             .then(info => {
-                console.log(JSON.parse(info));
                 this.setState({anime: JSON.parse(info)},
                     () => this.setState({loaded: true}))
             })

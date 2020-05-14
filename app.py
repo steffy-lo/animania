@@ -30,7 +30,7 @@ creds = ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
 gs = gspread.authorize(creds)
 review_sheet = gs.open("reviews").sheet1
 get_similar_users = None
-recommendations = {"user": {}, "item": {}}
+recommendations = {"user": {}, "item": {}, "user-based": {}}
 
 
 # define a custom encoder point to the json_util provided by pymongo (or its dependency bson)
@@ -106,13 +106,13 @@ def get_model_recommendations():
 
         # wait for thread to finish
         get_similar_users.join()
-        if "user-based" not in recommendations:
+        if username not in recommendations["user-based"]:
             user_based_recommendation(username, k, n)
         else:
-            k_prev, n_prev, recs = recommendations["user-based"]
+            k_prev, n_prev, recs = recommendations["user-based"][username]
             if k_prev != k or n_prev != n:
                 user_based_recommendation(username, k, n)
-        return jsonify({'result': recommendations["user-based"][-1]})
+        return jsonify({'result': recommendations["user-based"][username][-1]})
 
     else:
         q = settings["q"]
@@ -317,7 +317,7 @@ def user_based_recommendation(username, k, n):
             print("An unexpected API error occured.")  # user might have a private animelist
         i += 1
 
-    recommendations["user-based"] = k, n, list(set(top_recs))  # cache results
+    recommendations["user-based"][username] = k, n, list(set(top_recs))  # cache results
 
 
 def by_score(anime):

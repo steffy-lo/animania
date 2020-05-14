@@ -48,7 +48,6 @@ class Recommend extends React.Component {
                     () => {
                         getRecommendations(this.props.username, "user")
                             .then(recs => {
-                                console.log(recs);
                                 if (recs === 'processing') {
                                     this.loadRecommendations()
                                 } else {

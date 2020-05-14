@@ -41,9 +41,7 @@ class Home extends React.Component {
     getAnimes() {
         makeRequest('GET', "https://api.jikan.moe/v3/search/anime?q=" + this.state.query + "&limit=15")
             .then(info => {
-                this.setState({searchResults: JSON.parse(info).results},
-                    () => console.log(this.state.searchResults)
-                    )
+                this.setState({searchResults: JSON.parse(info).results})
             })
             .catch(err => {
                 console.log(err)
@@ -62,14 +60,12 @@ class Home extends React.Component {
         getUser(this.props.state.username).then(res => {
             this.setState({userData: res},
                 () => this.setState({loaded: true}));
-            console.log(res)
         })
             .catch(err => {
                 if (err.stat === 404) {
                     addUser(this.props.state.username).then(res => {
                         this.setState({userData: res},
                             () => this.setState({loaded: true}));
-                        console.log(res)
                     })
                         .catch(err => {
                             console.log(err)
@@ -131,8 +127,7 @@ class Home extends React.Component {
 
     addToWatch(username, mal_id, title, image_url) {
         addToWatchList(username, mal_id, title, image_url)
-            .then(res =>{
-                console.log(res);
+            .then(res => {
                 this.setState({addedPrompt: true});
                 this.setState({addedAnime: title})
             })
@@ -172,14 +167,8 @@ class Home extends React.Component {
             const score = parseInt(this.score.value);
             if (score > 0 && score < 11) {
                 this.setState({reviewPrompt: {show: false}});
-                addCompleted(this.props.state.username, anime_id, score)
-                    .then(res =>{
-                        console.log(res)
-                    })
-                removeFromWatch(this.props.state.username, anime_id)
-                    .then(res => {
-                        console.log(res)
-                    })
+                addCompleted(this.props.state.username, anime_id, score);
+                removeFromWatch(this.props.state.username, anime_id);
                 setTimeout(this.getUserData, 1000)
             }
         }

@@ -93,9 +93,12 @@ def get_model_recommendations():
     if type == "user":
         k = settings["k"]
         n = settings["n"]
+        anime_list = user["anime_list"]
 
         global get_similar_users
-        if get_similar_users is None:
+        update_list = (username in recommendations["user"][username]) \
+                      and recommendations["user"][username][1] != anime_list
+        if get_similar_users is None or update_list:
             get_similar_users = Thread(target=similar_users, args=(username,))
             get_similar_users.start()
             time.sleep(25)
@@ -177,13 +180,6 @@ def add_completed():
     for key in ["username", "anime_id", "score"]:
         if key not in req:
             abort(400)
-
-    global get_similar_users
-    if get_similar_users is not None:
-        get_similar_users.join()
-
-    get_similar_users = Thread(target=similar_users, args=(req["username"],))
-    get_similar_users.start()
 
     user = user_data.find_one({'username': req["username"]})
     anime_list = user["anime_list"]
@@ -302,7 +298,7 @@ def similar_users(username):
     arr_recs = np.asarray([key_list[val_list.index(i)] for i in range(len(arr_sim))], dtype=object)
     sim_inds = arr_sim.argsort()
     sorted_arr = arr_recs[sim_inds]
-    recommendations["user"][username] = list(set(sorted_arr.tolist()))
+    recommendations["user"][username] = list(set(sorted_arr.tolist())), anime_list
 
 
 def user_based_recommendation(username, k, n):
@@ -311,7 +307,7 @@ def user_based_recommendation(username, k, n):
     i = 1
     while len(top_k) < k and i < k * 2:
         try:
-            user = recommendations["user"][username][i]
+            user = recommendations["user"][username][0][i]
             animelist = sorted(jikan.user(username=user, request='animelist')['anime'], key=by_score,
                                reverse=True)[:n]
             top_k.append(user)

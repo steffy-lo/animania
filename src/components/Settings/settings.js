@@ -74,7 +74,7 @@ class Settings extends React.Component {
                     <h3>Modify the Recommendation Algorithm</h3>
                     <br/>
                     <h5>User-Based Recommendation</h5>
-                    <p>Finds <i>k</i> users who are most similar to you and then picks out <i>n</i> of their most favourite animes. This matches k * n animes that you might like to try out!</p>
+                    <p>Finds <i>k</i> users who are most similar to you and then tries to pick out <i>n</i> of their most favourite animes. This matches at most k * n animes that you might like to try out!</p>
                     <p> By default, k = 5 and n = 5. You can change the value of <i>n</i> and <i>k</i> by entering their new values below.</p>
                     <p> Warning: Increasing k or n might result in longer waiting times for your curated recommendations list to appear.</p>
                     <div>
@@ -83,14 +83,14 @@ class Settings extends React.Component {
                             <input type="number" min="1" max="10" id="n" placeholder="n"/>
                         </div>
                     </div>
-                    <h5>Anime-Based Recommendation</h5>
-                    <p>Finds <i>q</i> animes that are similar to a given anime.</p>
-                    <p>By default, q = 10.</p>
-                    <div>
-                        <div>
-                            <input type="number" id="q" min="1" max="15" placeholder="q"/>
-                        </div>
-                    </div>
+                    {/*<h5>Anime-Based Recommendation</h5>*/}
+                    {/*<p>Finds <i>q</i> animes that are similar to a given anime.</p>*/}
+                    {/*<p>By default, q = 10.</p>*/}
+                    {/*<div>*/}
+                    {/*    <div>*/}
+                    {/*        <input type="number" id="q" min="1" max="15" placeholder="q"/>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                     <p><Button variant="danger" id="save-settings" type="click" onClick={this.updateSettings}>Update Values</Button></p>
                     {this.message()}
                 </dl>

@@ -76,11 +76,10 @@ def get_model_recommendations():
     if type is None:
         abort(400)
 
-    if type == "user":
-        username = request.args.get('username')
-        if username is None:
-            abort(400)
-    elif type == "item":
+    username = request.args.get('username')
+    if username is None:
+        abort(400)
+    if type == "item":
         anime_id = request.args.get('anime_id')
         if anime_id is None:
             abort(400)
@@ -122,7 +121,7 @@ def get_model_recommendations():
         if anime_id not in recommendations["item"]:
             item_based_recommendation(anime_id)
 
-        return jsonify({'result': recommendations["items"][anime_id][1:q]})
+        return jsonify({'result': recommendations["item"][anime_id][1:q]})
 
 
 # ====================================== POST METHODS =================================================

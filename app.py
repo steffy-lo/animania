@@ -96,7 +96,7 @@ def get_model_recommendations():
         anime_list = user["anime_list"]
 
         global get_similar_users
-        update_list = (username in recommendations["user"][username]) \
+        update_list = (username in recommendations["user"]) \
                       and recommendations["user"][username][1] != anime_list
         if get_similar_users is None or update_list:
             get_similar_users = Thread(target=similar_users, args=(username,))

@@ -175,12 +175,12 @@ class Home extends React.Component {
                 addCompleted(this.props.state.username, anime_id, score)
                     .then(res =>{
                         console.log(res)
-                        removeFromWatch(this.props.state.username, anime_id)
-                            .then(res => {
-                                console.log(res)
-                                this.getUserData()
-                            })
                     })
+                removeFromWatch(this.props.state.username, anime_id)
+                    .then(res => {
+                        console.log(res)
+                    })
+                setTimeout(this.getUserData, 1000)
             }
         }
     }

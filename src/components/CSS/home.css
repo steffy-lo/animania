@@ -44,16 +44,16 @@ p {
 
 .logo-icon {
     display:inline-block;
-    width: 70%;
-    margin-left: 20%;
-    margin-top:0;
+    max-width: 300px;
+    margin-top: 0;
+    min-width: 300px;
 }
 
 .suggestion {
     position: absolute;
     background-color: white;
     z-index: 5;
-    width: 49%;
+    width: 49.5%;
     border: 0.5px solid lightgray;
     border-top: 0;
 }
@@ -74,24 +74,20 @@ p {
 }
 
 .settings{
-    margin-right:15%;
+    margin-right: 50px;
     margin-top: 1%;
-    max-width: 10%;
-    min-width: 15px;
+    width: 40px;
 }
 
 .log-out{
-    margin-right:15%;
+    margin-right: 50px;
     margin-top: 1%;
-    max-width: 10%;
-    min-width: 15px;
+    width: 40px;
 }
 
 .user-icon{
-    margin-right:20%;
     margin-top: 1%;
-    max-width: 12%;
-    min-width: 18px;
+    width: 40px;
     border-radius: 50%;
 }
 
@@ -112,25 +108,26 @@ p {
 .search{
     padding-left:5px;
     height:29px;
-    width:80%;
+    width:92%;
 }
 
 .icons{
-    margin-top: 1.6%;
     display: inline-block;
-    width: 20%;
-    text-align: right;
+    width: 10%;
+    min-width: 250px;
+    margin-bottom: 20px;
 }
 
 .logoImg{
     display: inline-block;
-    width:20%;
+    width: 300px;
 }
 
 .search-div{
-    margin-top: 1.6%;
+    margin: 1.6% 5% 15px;
     display: inline-block;
-    width: 60%;
+    width: 53%;
+    min-width: 380px;
 }
 
 .search-btn{
@@ -145,12 +142,29 @@ p {
     padding: 1%;
 }
 
-.nav-bar{
+.nav-bar {
     position: fixed; /* Set the navbar to fixed position */
     top: 0; /* Position the navbar at the top of the page */
     width: 100%; /* Full width */
+    text-align: center;
+}
+
+.nav-bar .top-btns {
+    text-align: left;
 }
 
 .anime-img:hover{
     opacity:22%;
+}
+
+@media screen and (min-width: 400px) {
+    body {
+        background-color: lightgreen;
+    }
+}
+
+@media screen and (min-width: 800px) {
+    body {
+        background-color: lavender;
+    }
 }

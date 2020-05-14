@@ -97,15 +97,15 @@ def get_model_recommendations():
 
         global get_similar_users
 
-        if get_similar_users is None:
-            get_similar_users = Thread(target=similar_users, args=(username,))
-            get_similar_users.start()
+        if get_similar_users is not None and get_similar_users.is_alive():
             return jsonify({'result': 'processing'})
 
         update_list = (username in recommendations["user"]) and recommendations["user"][username][1] != anime_list
-        if update_list:
-            if get_similar_users is not None and get_similar_users.is_alive():
-                return jsonify({'result': 'processing'})
+
+        if get_similar_users is None or update_list:
+            get_similar_users = Thread(target=similar_users, args=(username,))
+            get_similar_users.start()
+            return jsonify({'result': 'processing'})
 
         if username not in recommendations["user-based"]:
             user_based_recommendation(username, k, n)

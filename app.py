@@ -79,12 +79,11 @@ def get_model_recommendations():
     username = request.args.get('username')
     if username is None:
         abort(400)
+
     if type == "item":
         anime_id = request.args.get('anime_id')
         if anime_id is None:
             abort(400)
-    else:
-        abort(400)
 
     user = user_data.find_one({'username': username})
     settings = user["settings"]

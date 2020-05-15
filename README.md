@@ -1,5 +1,5 @@
 # Anime Recommendation System Project
-## Resources
+### Resources
 Jikan (Unofficial MAL API), documentation can be found here: https://jikan.docs.apiary.io/#  
 Dataset, which will be used for training the model: https://www.kaggle.com/azathoth42/myanimelist
 

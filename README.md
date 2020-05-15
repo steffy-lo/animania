@@ -1,5 +1,5 @@
 # Anime Recommendation System Project
-Deployed at animania-pwa.herokuapp.com
+Deployed at https://animania-pwa.herokuapp.com
 
 ### Resources
 Jikan (Unofficial MAL API), documentation can be found here: https://jikan.docs.apiary.io/#  

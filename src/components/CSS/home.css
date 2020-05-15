@@ -12,9 +12,9 @@
     max-width: 20%;
 }
 
-.anime-desc .col{
-    margin: 3%;
-    max-width: 100%;
+.anime-desc {
+    max-width: 80% !important;
+    overflow-wrap: break-word;
 }
 
 .add-prompt {
@@ -162,8 +162,6 @@ p {
     opacity:22%;
 }
 
-@media screen and (min-width: 400px) {
-}
-
-@media screen and (min-width: 800px) {
+.img-search {
+    max-width: 20% !important;
 }

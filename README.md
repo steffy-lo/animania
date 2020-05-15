@@ -1,68 +1,31 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Anime Recommendation System Project
+## Resources
+Jikan (Unofficial MAL API), documentation can be found here: https://jikan.docs.apiary.io/#\
+Dataset, which will be used for training the model: https://www.kaggle.com/azathoth42/myanimelist
 
-## Available Scripts
+## Algorithm: Matching Users to Recommendations
+### User-Based Collaborative Filtering for a Personalized Recommendations List
+We want to find a set of similar users and based on what similar users have rated highly or favourited, these will be matched to the user. Similarity will be defined based on cosine similarity.
 
-In the project directory, you can run:
+### Matching to General Trends
+- Display a list of anime based on overall ranking or popularity (this can be all fetched through the API)
+- Additional refinements include filtering genres and type of anime (i.e., TV series or movie)
 
-### `npm start`
+## User Profiles
+- Email as username
+- Can sign in using Google or Facebook (using Firebase authentication)
+- Has a "Completed" List and a "To Watch List"
+- Completed animes must be rated by a user so that recommendations can be provided
+- Settings info
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Main Features
+- See the general trends and a personalized recommendation list
+- Add watched or to watch anime into "completed" and "to watch" list respectively
+- Completed animes, each having a rating (1-10), will be used to train the dataset and predict similar users
+- Modify the number of recommendations given in the settings page
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+## Tech Stack
+- Languages: Python, JavaScript, HTML, CSS
+- Frameworks: ReactJS (Front-End), Python Flask (Back-End)
+- Database: MongoDB
+- APIs/Other: JikanAPI, Google Sheets API, Firebase Authentication, Progressive Web App (PWA)

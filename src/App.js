@@ -18,10 +18,7 @@ class App extends React.Component {
               firebase.auth.GoogleAuthProvider.PROVIDER_ID,
               firebase.auth.FacebookAuthProvider.PROVIDER_ID,
               firebase.auth.EmailAuthProvider.PROVIDER_ID
-          ],
-        callbacks: {
-              signInSuccessWithAuthResult: () => false
-          }
+          ]
       };
     this.state = {
         isSignedIn: false

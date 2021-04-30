@@ -35,7 +35,7 @@ python3-mal==0.2.20
 pytz==2019.3
 requests==2.18.4
 requests-oauthlib==1.3.0
-rsa==4.0
+rsa==4.7
 scikit-learn==0.22.2.post1
 scikit-surprise==1.1.0
 scipy==1.4.1

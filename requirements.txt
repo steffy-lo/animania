@@ -19,7 +19,7 @@ itsdangerous==1.1.0
 jikanpy==3.4.2
 Jinja2==2.11.2
 joblib==0.14.1
-lxml==4.3.4
+lxml==4.6.5
 mal-api==0.1.0
 MarkupSafe==1.1.1
 multidict==4.7.5
